@@ -1,0 +1,26 @@
+version: '3'
+services:
+
+  nginx:
+    image: nginx:latest
+    container_name: nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./:/var/www
+      - ./docker/nginx/hosts:/etc/nginx/conf.d/
+      - ./logs/nginx:/var/log/nginx
+
+  php:
+    build: ./docker/php
+    container_name: php
+    working_dir: /var/www
+    volumes:
+      - ./:/var/www
+
+  redis:
+    image: redis:4.0
+    container_name: redis
+    ports:
+      - "6382:6379"
