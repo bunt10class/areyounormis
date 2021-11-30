@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Kinopoisk\WebService;
 
 use GuzzleHttp\Exception\GuzzleException;
-use Kinopoisk\UserMoviesDto;
+use Kinopoisk\KinopoiskUserMovies;
 use Kinopoisk\KinopoiskUserMovieServiceInterface;
 use Kinopoisk\WebService\Client\KinopoiskWebClient;
 use Kinopoisk\WebService\UserMoviesPageParser\UserMoviesParser;
@@ -29,9 +29,9 @@ class WebKinopoiskUserMoviesService implements KinopoiskUserMovieServiceInterfac
     /**
      * @throws GuzzleException
      */
-    public function getUserMoviesById(int $userId): UserMoviesDto
+    public function getUserMoviesById(int $userId): KinopoiskUserMovies
     {
-        $userMovies = new UserMoviesDto();
+        $userMovies = new KinopoiskUserMovies();
 
         $page = 1;
         while (1) {
@@ -54,7 +54,7 @@ class WebKinopoiskUserMoviesService implements KinopoiskUserMovieServiceInterfac
     /**
      * @throws GuzzleException
      */
-    protected function getUserMoviesFromPage(int $userId, int $page): ?UserMoviesDto
+    protected function getUserMoviesFromPage(int $userId, int $page): ?KinopoiskUserMovies
     {
         $response = $this->client->getUserVotesByPage($userId, $page);
 

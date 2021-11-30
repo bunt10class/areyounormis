@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Areyounormis\UserMovie\Models\ClientRequest;
+namespace Areyounormis\ClientRequest;
 
-use Areyounormis\UserMovie\Models\ClientRequest\Parser\InvalidRequestInString;
-use Areyounormis\UserMovie\Models\ClientRequest\Parser\RequestParserInterface;
+use Areyounormis\ClientRequest\Parser\InvalidRequestInString;
+use Areyounormis\ClientRequest\Parser\RequestParserInterface;
 use Kinopoisk\WebService\Client\RequestServiceInterface;
 
 class RequestService implements RequestServiceInterface

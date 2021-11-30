@@ -5,19 +5,19 @@ declare(strict_types=1);
 namespace Tests\Unit\Areyounormis\UserMovie;
 
 use Areyounormis\UserMovie\UserMovieRateFactory;
-use Kinopoisk\UserMoviesDto;
+use Kinopoisk\KinopoiskUserMovies;
 use PHPUnit\Framework\TestCase;
-use Tests\Unit\Kinopoisk\Factories\UserMovieDtoFactory;
+use Tests\Unit\Kinopoisk\Factories\KinopoiskUserMovieFactory;
 
 class UserMovieRateFactoryKinopoiskTest extends TestCase
 {
-    protected UserMovieDtoFactory $userMovieDtoFactory;
+    protected KinopoiskUserMovieFactory $factory;
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->userMovieDtoFactory = new UserMovieDtoFactory();
+        $this->factory = new KinopoiskUserMovieFactory();
     }
 
     /**
@@ -25,15 +25,14 @@ class UserMovieRateFactoryKinopoiskTest extends TestCase
      * @group areyounormis
      * @group user_movie_rate_factory
      */
-    public function testMakeFromKinopoiskDto(): void
+    public function testMakeFromKinopoiskUserMovies(): void
     {
         $ruName = 'некоторое имя';
         $enName = 'some name';
         $link = 'https://some_url';
-        $kpVote = 3.5;
-        $userVote = 8;
-        $relatedRate = ($userVote - $kpVote) / 9;
-        $userMovieDto = $this->userMovieDtoFactory->makeUserMovieDto([
+        $kpVote = 2.5;
+        $userVote = 7;
+        $userMovie = $this->factory->makeKinopoiskUserMovie([
             'ru_name' => $ruName,
             'en_name' => $enName,
             'link' => $link,
@@ -41,14 +40,13 @@ class UserMovieRateFactoryKinopoiskTest extends TestCase
             'user_vote' => $userVote,
         ]);
 
-        $result = UserMovieRateFactory::makeFromKinopoiskDto($userMovieDto);
+        $result = UserMovieRateFactory::makeFromKinopoiskUserMovie($userMovie);
 
         self::assertEquals($ruName, $result->getMovie()->getRuName());
         self::assertEquals($enName, $result->getMovie()->getEnName());
         self::assertEquals($link, $result->getMovie()->getLink());
-        self::assertEquals((string)$kpVote, $result->getMovie()->getVote());
-        self::assertEquals((string)$userVote, $result->getUserVote());
-        self::assertEquals($relatedRate, $result->getRelativeRate()->getValue());
+        self::assertEquals($kpVote, $result->getUserRate()->getAvgVote());
+        self::assertEquals($userVote, $result->getUserRate()->getUserVote());
     }
 
     /**
@@ -56,30 +54,13 @@ class UserMovieRateFactoryKinopoiskTest extends TestCase
      * @group areyounormis
      * @group user_movie_rate_factory
      */
-    public function testMakeFromKinopoiskDtoWithKpVoteInt(): void
+    public function testMakeFromKinopoiskUserMoviesWithKpVoteAboveBoundary(): void
     {
-        $kpVote = 5;
-        $userMovieDto = $this->userMovieDtoFactory->makeUserMovieDto([
-            'kp_vote' => $kpVote,
-        ]);
-
-        $result = UserMovieRateFactory::makeFromKinopoiskDto($userMovieDto);
-
-        self::assertEquals((string)$kpVote, $result->getMovie()->getVote());
-    }
-
-    /**
-     * @group unit
-     * @group areyounormis
-     * @group user_movie_rate_factory
-     */
-    public function testMakeFromKinopoiskDtoWithKpVoteAboveBoundary(): void
-    {
-        $userMovieDto = $this->userMovieDtoFactory->makeUserMovieDto([
+        $userMovie = $this->factory->makeKinopoiskUserMovie([
             'kp_vote' => 10.001,
         ]);
 
-        $result = UserMovieRateFactory::makeFromKinopoiskDto($userMovieDto);
+        $result = UserMovieRateFactory::makeFromKinopoiskUserMovie($userMovie);
 
         self::assertNull($result);
     }
@@ -89,13 +70,13 @@ class UserMovieRateFactoryKinopoiskTest extends TestCase
      * @group areyounormis
      * @group user_movie_rate_factory
      */
-    public function testMakeFromKinopoiskDtoWithKpVoteBelowBoundary(): void
+    public function testMakeFromKinopoiskUserMoviesWithKpVoteBelowBoundary(): void
     {
-        $userMovieDto = $this->userMovieDtoFactory->makeUserMovieDto([
+        $userMovie = $this->factory->makeKinopoiskUserMovie([
             'kp_vote' => 0.999,
         ]);
 
-        $result = UserMovieRateFactory::makeFromKinopoiskDto($userMovieDto);
+        $result = UserMovieRateFactory::makeFromKinopoiskUserMovie($userMovie);
 
         self::assertNull($result);
     }
@@ -105,16 +86,15 @@ class UserMovieRateFactoryKinopoiskTest extends TestCase
      * @group areyounormis
      * @group user_movie_rate_factory
      */
-    public function testMakeFromKinopoiskDtoWithUserVoteInt(): void
+    public function testMakeFromKinopoiskUserMoviesWithUserVoteAboveBoundary(): void
     {
-        $userVote = 5;
-        $userMovieDto = $this->userMovieDtoFactory->makeUserMovieDto([
-            'user_vote' => $userVote,
+        $userMovie = $this->factory->makeKinopoiskUserMovie([
+            'user_vote' => 11,
         ]);
 
-        $result = UserMovieRateFactory::makeFromKinopoiskDto($userMovieDto);
+        $result = UserMovieRateFactory::makeFromKinopoiskUserMovie($userMovie);
 
-        self::assertEquals((string)$userVote, $result->getUserVote());
+        self::assertNull($result);
     }
 
     /**
@@ -122,33 +102,47 @@ class UserMovieRateFactoryKinopoiskTest extends TestCase
      * @group areyounormis
      * @group user_movie_rate_factory
      */
-    public function testMakeCollectionFromKinopoiskDtoCollection(): void
+    public function testMakeFromKinopoiskUserMoviesWithUserVoteBelowBoundary(): void
+    {
+        $userMovie = $this->factory->makeKinopoiskUserMovie([
+            'user_vote' => 0,
+        ]);
+
+        $result = UserMovieRateFactory::makeFromKinopoiskUserMovie($userMovie);
+
+        self::assertNull($result);
+    }
+
+    /**
+     * @group unit
+     * @group areyounormis
+     * @group user_movie_rate_factory
+     */
+    public function testMakeCollectionFromKinopoiskCollection(): void
     {
         $ruName = 'некоторое имя';
         $enName = 'some name';
         $link = 'https://some_url';
-        $kpVote = 3.5;
-        $userVote = 8;
-        $relatedRate = ($userVote - $kpVote) / 9;
-        $userMovieDto = $this->userMovieDtoFactory->makeUserMovieDto([
+        $kpVote = 2.5;
+        $userVote = 7;
+        $userMovie = $this->factory->makeKinopoiskUserMovie([
             'ru_name' => $ruName,
             'en_name' => $enName,
             'link' => $link,
             'kp_vote' => $kpVote,
             'user_vote' => $userVote,
         ]);
-        $userMoviesDto = new UserMoviesDto();
-        $userMoviesDto->addOne($userMovieDto);
+        $userMovies = new KinopoiskUserMovies();
+        $userMovies->addOne($userMovie);
 
-        $result = UserMovieRateFactory::makeCollectionFromKinopoiskDtoCollection($userMoviesDto);
+        $result = UserMovieRateFactory::makeCollectionFromKinopoiskUserMovies($userMovies);
 
         $userMovieRate = $result->getUserMovieRates()[0];
         self::assertEquals($ruName, $userMovieRate->getMovie()->getRuName());
         self::assertEquals($enName, $userMovieRate->getMovie()->getEnName());
         self::assertEquals($link, $userMovieRate->getMovie()->getLink());
-        self::assertEquals((string)$kpVote, $userMovieRate->getMovie()->getVote());
-        self::assertEquals((string)$userVote, $userMovieRate->getUserVote());
-        self::assertEquals($relatedRate, $userMovieRate->getRelativeRate()->getValue());
+        self::assertEquals($kpVote, $userMovieRate->getUserRate()->getAvgVote());
+        self::assertEquals($userVote, $userMovieRate->getUserRate()->getUserVote());
     }
 
     /**
@@ -156,16 +150,13 @@ class UserMovieRateFactoryKinopoiskTest extends TestCase
      * @group areyounormis
      * @group user_movie_rate_factory
      */
-    public function testMakeCollectionFromKinopoiskDtoCollectionWithSomeDto(): void
+    public function testMakeCollectionFromKinopoiskCollectionWithSome(): void
     {
-        $userMoviesDto = new UserMoviesDto();
-        $userMoviesDto->addOne($this->userMovieDtoFactory->makeUserMovieDto());
-        $userMoviesDto->addOne($this->userMovieDtoFactory->makeUserMovieDto());
-        $userMoviesDto->addOne($this->userMovieDtoFactory->makeUserMovieDto());
+        $userMovies = $this->factory->makeKinopoiskUserMoviesWithUserMovie($number = 3);
 
-        $result = UserMovieRateFactory::makeCollectionFromKinopoiskDtoCollection($userMoviesDto);
+        $result = UserMovieRateFactory::makeCollectionFromKinopoiskUserMovies($userMovies);
 
-        self::assertCount(3, $result->getUserMovieRates());
+        self::assertCount($number, $result->getUserMovieRates());
     }
 
     /**
@@ -173,15 +164,15 @@ class UserMovieRateFactoryKinopoiskTest extends TestCase
      * @group areyounormis
      * @group user_movie_rate_factory
      */
-    public function testMakeCollectionFromKinopoiskDtoCollectionWithInvalidUserMovieDtoData(): void
+    public function testMakeCollectionFromKinopoiskCollectionWithInvalidUserMovieData(): void
     {
-        $userMovieDto = $this->userMovieDtoFactory->makeUserMovieDto([
+        $userMovie = $this->factory->makeKinopoiskUserMovie([
             'kp_vote' => 0,
         ]);
-        $userMoviesDto = new UserMoviesDto();
-        $userMoviesDto->addOne($userMovieDto);
+        $userMovies = $this->factory->makeEmptyKinopoiskUserMovies();
+        $userMovies->addOne($userMovie);
 
-        $result = UserMovieRateFactory::makeCollectionFromKinopoiskDtoCollection($userMoviesDto);
+        $result = UserMovieRateFactory::makeCollectionFromKinopoiskUserMovies($userMovies);
 
         self::assertEmpty($result->getUserMovieRates());
     }

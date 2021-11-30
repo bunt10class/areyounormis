@@ -4,22 +4,19 @@ declare(strict_types=1);
 
 namespace Areyounormis\UserMovie;
 
-use Areyounormis\Exceptions\RelativeRateException;
-use Kinopoisk\UserMovieDto;
-use Kinopoisk\UserMoviesDto;
-use Kinopoisk\VoteHelper;
+use Areyounormis\UserRate\Exceptions\UserRateException;
+use Areyounormis\UserRate\UserRateFactory;
+use Kinopoisk\KinopoiskUserMovie;
+use Kinopoisk\KinopoiskUserMovies;
 
 class UserMovieRateFactory
 {
-    /**
-     * @throws RelativeRateException
-     */
-    public static function makeCollectionFromKinopoiskDtoCollection(UserMoviesDto $userMoviesDto): UserMovieRates
+    public static function makeCollectionFromKinopoiskUserMovies(KinopoiskUserMovies $kinopoiskUserMovies): UserMovieRates
     {
         $userMovieRates = new UserMovieRates();
 
-        foreach ($userMoviesDto->getUserMovies() as $userMovieDto) {
-            $userMovieRate = self::makeFromKinopoiskDto($userMovieDto);
+        foreach ($kinopoiskUserMovies->getUserMovies() as $userMovieDto) {
+            $userMovieRate = self::makeFromKinopoiskUserMovie($userMovieDto);
             if (is_null($userMovieRate)) {
                 continue;
             }
@@ -30,30 +27,27 @@ class UserMovieRateFactory
         return $userMovieRates;
     }
 
-    /**
-     * @throws RelativeRateException
-     */
-    public static function makeFromKinopoiskDto(UserMovieDto $userMovieDto): ?UserMovieRate
+    public static function makeFromKinopoiskUserMovie(KinopoiskUserMovie $kinopoiskUserMovie): ?UserMovieRate
     {
-        $kpVote = $userMovieDto->getKpVote();
-        $userVote = $userMovieDto->getUserVote();
-        if (!VoteHelper::isValidVote($kpVote) || !VoteHelper::isValidVote($userVote)) {
+        $kpVote = $kinopoiskUserMovie->getKpVote();
+        $userVote = $kinopoiskUserMovie->getUserVote();
+        if (!is_numeric($kpVote) || !is_numeric($userVote)) {
+            return null;
+        }
+
+        try {
+            $userRate = UserRateFactory::makeKinopoiskUserRate($kpVote, $userVote);
+        } catch (UserRateException $exception) {
+            //todo log
             return null;
         }
 
         $movie = new Movie(
-            $userMovieDto->getRuName(),
-            $userMovieDto->getEnName(),
-            $userMovieDto->getLink(),
-            (string)$kpVote,
+            $kinopoiskUserMovie->getRuName(),
+            $kinopoiskUserMovie->getEnName(),
+            $kinopoiskUserMovie->getLink(),
         );
 
-        $relativeRate = ($userVote - $kpVote) / VoteHelper::MAX_VOTES_DIFF;
-
-        return new UserMovieRate(
-            (string)$userVote,
-            new RelativeRate($relativeRate),
-            $movie
-        );
+        return new UserMovieRate($userRate, $movie);
     }
 }

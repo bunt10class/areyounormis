@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Areyounormis\ClientRequest\Parser;
 
-use Areyounormis\UserMovie\Models\ClientRequest\Parser\CurlBashRequestParser;
-use Areyounormis\UserMovie\Models\ClientRequest\Parser\InvalidRequestInString;
+use Areyounormis\ClientRequest\Parser\CurlBashRequestParser;
+use Areyounormis\ClientRequest\Parser\InvalidRequestInString;
 use PHPUnit\Framework\TestCase;
 use Tests\Unit\Areyounormis\Factories\CurlBashRequestFactory;
 
@@ -24,7 +24,7 @@ class CurlBashRequestParserTest extends TestCase
 
     /**
      * @group unit
-     * @group parser
+     * @group areyounormis
      * @group curl_bash_request_parser
      */
     public function testParseEmptyString(): void
@@ -36,7 +36,7 @@ class CurlBashRequestParserTest extends TestCase
 
     /**
      * @group unit
-     * @group parser
+     * @group areyounormis
      * @group curl_bash_request_parser
      */
     public function testParseStringWithoutAnyQuotationMark(): void
@@ -50,7 +50,7 @@ class CurlBashRequestParserTest extends TestCase
 
     /**
      * @group unit
-     * @group parser
+     * @group areyounormis
      * @group curl_bash_request_parser
      */
     public function testParseStringWithoutEndpointClosedQuotationMark(): void
@@ -64,7 +64,7 @@ class CurlBashRequestParserTest extends TestCase
 
     /**
      * @group unit
-     * @group parser
+     * @group areyounormis
      * @group curl_bash_request_parser
      */
     public function testParseEmptyHeaders(): void
@@ -80,7 +80,7 @@ class CurlBashRequestParserTest extends TestCase
 
     /**
      * @group unit
-     * @group parser
+     * @group areyounormis
      * @group curl_bash_request_parser
      */
     public function testParseStringWithoutHeaderColon(): void
@@ -94,7 +94,7 @@ class CurlBashRequestParserTest extends TestCase
 
     /**
      * @group unit
-     * @group parser
+     * @group areyounormis
      * @group curl_bash_request_parser
      */
     public function testParseStringWithoutHeaderClosedQuotationMark(): void
@@ -108,7 +108,7 @@ class CurlBashRequestParserTest extends TestCase
 
     /**
      * @group unit
-     * @group parser
+     * @group areyounormis
      * @group curl_bash_request_parser
      */
     public function testParseValidString(): void

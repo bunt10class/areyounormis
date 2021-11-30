@@ -15,7 +15,7 @@ class UserReportFacade
         $this->userReport = $userReport;
     }
 
-    public function toArray(): array
+    public function getPrettyData(): array
     {
         $user = $this->userReport->getUser();
 
@@ -26,20 +26,22 @@ class UserReportFacade
             ],
             'norm_coefficient' => $this->userReport->getNormCoefficient(),
             'over_under_rate_coefficient' => $this->userReport->getOverUnderRateCoefficient(),
-            'over_rate_movies' => [
-
-            ]
+            'over_rates' => $this->getPrettyDataUserMovieRates($this->userReport->getOverRates()),
+            'norm_rates' => $this->getPrettyDataUserMovieRates($this->userReport->getNormRates()),
+            'under_rates' => $this->getPrettyDataUserMovieRates($this->userReport->getUnderRates()),
         ];
     }
 
-    protected function getMovieList(UserMovieRates $userMovieRates): array
+    protected function getPrettyDataUserMovieRates(UserMovieRates $userMovieRates): array
     {
-        $movieList = [];
+        $result = [];
 
-//        foreach ($userMovieRates->getUserMovieRates() as $userMovieRate) {
-//            $userMovieRate->
-//        }
+        foreach ($userMovieRates->getUserMovieRates() as $userMovieRate) {
+            $result[] = [
 
-        return $movieList;
+            ];
+        }
+
+        return $result;
     }
 }

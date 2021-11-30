@@ -6,5 +6,5 @@ namespace Kinopoisk;
 
 interface KinopoiskUserMovieServiceInterface
 {
-    public function getUserMoviesById(int $userId): UserMoviesDto;
+    public function getUserMoviesById(int $userId): KinopoiskUserMovies;
 }

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Areyounormis\UserMovie\Models\ClientRequest;
+namespace Areyounormis\ClientRequest;
 
 class RequestDto
 {

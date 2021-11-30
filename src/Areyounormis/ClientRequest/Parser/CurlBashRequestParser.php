@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Areyounormis\UserMovie\Models\ClientRequest\Parser;
+namespace Areyounormis\ClientRequest\Parser;
 
-use Areyounormis\UserMovie\Models\ClientRequest\RequestDto;
+use Areyounormis\ClientRequest\RequestDto;
 
 class CurlBashRequestParser implements RequestParserInterface
 {

@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Tests\Unit\Areyounormis\Report;
 
 use Areyounormis\Report\RatesCollector;
-use Areyounormis\UserMovie\RelativeRates;
 use Areyounormis\UserMovie\UserMovieRates;
 use PHPUnit\Framework\TestCase;
 use Tests\Unit\Areyounormis\Factories\UserMovieRateFactory;
@@ -14,10 +13,9 @@ class RatesCollectorTest extends TestCase
 {
     protected RatesCollector $classUnderTest;
 
-    protected UserMovieRates $overRateMovie;
-    protected UserMovieRates $normRateMovies;
-    protected UserMovieRates $underRateMovies;
-    protected RelativeRates $relativeRates;
+    protected UserMovieRates $overRates;
+    protected UserMovieRates $normRates;
+    protected UserMovieRates $underRates;
 
     protected UserMovieRateFactory $factory;
 
@@ -27,12 +25,11 @@ class RatesCollectorTest extends TestCase
 
         $this->classUnderTest = new RatesCollector();
 
-        $this->overRateMovie = new UserMovieRates();
-        $this->normRateMovies = new UserMovieRates();
-        $this->underRateMovies = new UserMovieRates();
-        $this->relativeRates = new RelativeRates();
-
         $this->factory = new UserMovieRateFactory();
+
+        $this->overRates = $this->factory->makeEmptyUserMovieRates();
+        $this->normRates = $this->factory->makeEmptyUserMovieRates();
+        $this->underRates = $this->factory->makeEmptyUserMovieRates();
     }
 
     /**
@@ -40,22 +37,21 @@ class RatesCollectorTest extends TestCase
      * @group areyounormis
      * @group rates_collector
      */
-    public function testCollectRatesWithoutUserMovieRates(): void
+    public function testCollectUserRatesWithoutUserMovieRates(): void
     {
-        $userMovieRates = new UserMovieRates();
+        $userMovieRates = $this->factory->makeEmptyUserMovieRates();
 
-        $this->classUnderTest->collectRates(
+        $userRates = $this->classUnderTest->collectUserRates(
             $userMovieRates,
-            $this->overRateMovie,
-            $this->normRateMovies,
-            $this->underRateMovies,
-            $this->relativeRates,
+            $this->overRates,
+            $this->normRates,
+            $this->underRates,
         );
 
-        self::assertEmpty($this->overRateMovie->getUserMovieRates());
-        self::assertEmpty($this->normRateMovies->getUserMovieRates());
-        self::assertEmpty($this->underRateMovies->getUserMovieRates());
-        self::assertEmpty($this->relativeRates->getRelativeRates());
+        self::assertEmpty($this->overRates->getUserMovieRates());
+        self::assertEmpty($this->normRates->getUserMovieRates());
+        self::assertEmpty($this->underRates->getUserMovieRates());
+        self::assertEmpty($userRates->getUserRates());
     }
 
     /**
@@ -63,24 +59,25 @@ class RatesCollectorTest extends TestCase
      * @group areyounormis
      * @group rates_collector
      */
-    public function testCollectRatesWithOverRatesMovies(): void
+    public function testCollectUserRatesWithOverRate(): void
     {
-        $userMovieRates = new UserMovieRates();
-        $userMovieRates->addOne($this->factory->makeUserMovieRate(['relative_rate' => 0.7]));
-        $userMovieRates->addOne($this->factory->makeUserMovieRate(['relative_rate' => 0.9]));
+        $userMovieRates = $this->factory->makeEmptyUserMovieRates();
+        $userMovieRates->addOne($this->factory->makeUserMovieRate([
+            'avg_vote' => 0,
+            'user_vote' => 10,
+        ]));
 
-        $this->classUnderTest->collectRates(
+        $userRates = $this->classUnderTest->collectUserRates(
             $userMovieRates,
-            $this->overRateMovie,
-            $this->normRateMovies,
-            $this->underRateMovies,
-            $this->relativeRates,
+            $this->overRates,
+            $this->normRates,
+            $this->underRates,
         );
 
-        self::assertCount(2, $this->overRateMovie->getUserMovieRates());
-        self::assertEmpty($this->normRateMovies->getUserMovieRates());
-        self::assertEmpty($this->underRateMovies->getUserMovieRates());
-        self::assertCount(2, $this->relativeRates->getRelativeRates());
+        self::assertCount(1, $this->overRates->getUserMovieRates());
+        self::assertEmpty($this->normRates->getUserMovieRates());
+        self::assertEmpty($this->underRates->getUserMovieRates());
+        self::assertCount(1, $userRates->getUserRates());
     }
 
     /**
@@ -88,24 +85,33 @@ class RatesCollectorTest extends TestCase
      * @group areyounormis
      * @group rates_collector
      */
-    public function testCollectRatesWithNormRatesMovies(): void
+    public function testCollectUserRatesWithNormRates(): void
     {
-        $userMovieRates = new UserMovieRates();
-        $userMovieRates->addOne($this->factory->makeUserMovieRate(['relative_rate' => -0.02]));
-        $userMovieRates->addOne($this->factory->makeUserMovieRate(['relative_rate' => 0.03]));
+        $userMovieRates = $this->factory->makeEmptyUserMovieRates();
+        $userMovieRates->addOne($this->factory->makeUserMovieRate([
+            'avg_vote' => 5,
+            'user_vote' => 5.1,
+        ]));
+        $userMovieRates->addOne($this->factory->makeUserMovieRate([
+            'avg_vote' => 5,
+            'user_vote' => 5,
+        ]));
+        $userMovieRates->addOne($this->factory->makeUserMovieRate([
+            'avg_vote' => 5,
+            'user_vote' => 4.9,
+        ]));
 
-        $this->classUnderTest->collectRates(
+        $userRates = $this->classUnderTest->collectUserRates(
             $userMovieRates,
-            $this->overRateMovie,
-            $this->normRateMovies,
-            $this->underRateMovies,
-            $this->relativeRates,
+            $this->overRates,
+            $this->normRates,
+            $this->underRates,
         );
 
-        self::assertEmpty($this->overRateMovie->getUserMovieRates());
-        self::assertCount(2, $this->normRateMovies->getUserMovieRates());
-        self::assertEmpty($this->underRateMovies->getUserMovieRates());
-        self::assertCount(2, $this->relativeRates->getRelativeRates());
+        self::assertEmpty($this->overRates->getUserMovieRates());
+        self::assertCount(3, $this->normRates->getUserMovieRates());
+        self::assertEmpty($this->underRates->getUserMovieRates());
+        self::assertCount(3, $userRates->getUserRates());
     }
 
     /**
@@ -113,24 +119,25 @@ class RatesCollectorTest extends TestCase
      * @group areyounormis
      * @group rates_collector
      */
-    public function testCollectRatesWithUnderRatesMovies(): void
+    public function testCollectUserRatesWithUnderRate(): void
     {
-        $userMovieRates = new UserMovieRates();
-        $userMovieRates->addOne($this->factory->makeUserMovieRate(['relative_rate' => -0.95]));
-        $userMovieRates->addOne($this->factory->makeUserMovieRate(['relative_rate' => -0.8]));
+        $userMovieRates = $this->factory->makeEmptyUserMovieRates();
+        $userMovieRates->addOne($this->factory->makeUserMovieRate([
+            'avg_vote' => 10,
+            'user_vote' => 0,
+        ]));
 
-        $this->classUnderTest->collectRates(
+        $userRates = $this->classUnderTest->collectUserRates(
             $userMovieRates,
-            $this->overRateMovie,
-            $this->normRateMovies,
-            $this->underRateMovies,
-            $this->relativeRates,
+            $this->overRates,
+            $this->normRates,
+            $this->underRates,
         );
 
-        self::assertEmpty($this->overRateMovie->getUserMovieRates());
-        self::assertEmpty($this->normRateMovies->getUserMovieRates());
-        self::assertCount(2, $this->underRateMovies->getUserMovieRates());
-        self::assertCount(2, $this->relativeRates->getRelativeRates());
+        self::assertEmpty($this->overRates->getUserMovieRates());
+        self::assertEmpty($this->normRates->getUserMovieRates());
+        self::assertCount(1, $this->underRates->getUserMovieRates());
+        self::assertCount(1, $userRates->getUserRates());
     }
 
     /**
@@ -138,24 +145,29 @@ class RatesCollectorTest extends TestCase
      * @group areyounormis
      * @group rates_collector
      */
-    public function testCollectRatesWithBoundaryRatesMovies(): void
+    public function testCollectUserRatesWithNoAnyRates(): void
     {
-        $userMovieRates = new UserMovieRates();
-        $userMovieRates->addOne($this->factory->makeUserMovieRate(['relative_rate' => -1]));
-        $userMovieRates->addOne($this->factory->makeUserMovieRate(['relative_rate' => 0]));
-        $userMovieRates->addOne($this->factory->makeUserMovieRate(['relative_rate' => 1]));
+        $userMovieRates = $this->factory->makeEmptyUserMovieRates();
+        $userMovieRates->addOne($this->factory->makeUserMovieRate([
+            'avg_vote' => 5,
+            'user_vote' => 7,
+        ]));
+        $userMovieRates->addOne($this->factory->makeUserMovieRate([
+            'avg_vote' => 5,
+            'user_vote' => 3,
+        ]));
 
-        $this->classUnderTest->collectRates(
+        $userRates = $this->classUnderTest->collectUserRates(
             $userMovieRates,
-            $this->overRateMovie,
-            $this->normRateMovies,
-            $this->underRateMovies,
-            $this->relativeRates,
+            $this->overRates,
+            $this->normRates,
+            $this->underRates,
         );
 
-        self::assertCount(1, $this->overRateMovie->getUserMovieRates());
-        self::assertCount(1, $this->normRateMovies->getUserMovieRates());
-        self::assertCount(1, $this->underRateMovies->getUserMovieRates());
+        self::assertEmpty($this->overRates->getUserMovieRates());
+        self::assertEmpty($this->normRates->getUserMovieRates());
+        self::assertEmpty($this->underRates->getUserMovieRates());
+        self::assertCount(2, $userRates->getUserRates());
     }
 
     /**
@@ -163,27 +175,32 @@ class RatesCollectorTest extends TestCase
      * @group areyounormis
      * @group rates_collector
      */
-    public function testCollectRatesWithVariousRatesMovies(): void
+    public function testCollectUserRatesWithVariousRates(): void
     {
-        $userMovieRates = new UserMovieRates();
-        $userMovieRates->addOne($this->factory->makeUserMovieRate(['relative_rate' => -0.91]));
-        $userMovieRates->addOne($this->factory->makeUserMovieRate(['relative_rate' => -0.77]));
-        $userMovieRates->addOne($this->factory->makeUserMovieRate(['relative_rate' => -0.68]));
-        $userMovieRates->addOne($this->factory->makeUserMovieRate(['relative_rate' => -0.01]));
-        $userMovieRates->addOne($this->factory->makeUserMovieRate(['relative_rate' => 0.02]));
-        $userMovieRates->addOne($this->factory->makeUserMovieRate(['relative_rate' => 0.83]));
+        $userMovieRates = $this->factory->makeEmptyUserMovieRates();
+        $userMovieRates->addOne($this->factory->makeUserMovieRate([
+            'avg_vote' => 1.23,
+            'user_vote' => 9.87,
+        ]));
+        $userMovieRates->addOne($this->factory->makeUserMovieRate([
+            'avg_vote' => 5.6,
+            'user_vote' => 5.7,
+        ]));
+        $userMovieRates->addOne($this->factory->makeUserMovieRate([
+            'avg_vote' => 9.87,
+            'user_vote' => 1.23,
+        ]));
 
-        $this->classUnderTest->collectRates(
+        $userRates = $this->classUnderTest->collectUserRates(
             $userMovieRates,
-            $this->overRateMovie,
-            $this->normRateMovies,
-            $this->underRateMovies,
-            $this->relativeRates,
+            $this->overRates,
+            $this->normRates,
+            $this->underRates,
         );
 
-        self::assertCount(1, $this->overRateMovie->getUserMovieRates());
-        self::assertCount(2, $this->normRateMovies->getUserMovieRates());
-        self::assertCount(3, $this->underRateMovies->getUserMovieRates());
-        self::assertCount(6, $this->relativeRates->getRelativeRates());
+        self::assertCount(1, $this->overRates->getUserMovieRates());
+        self::assertCount(1, $this->normRates->getUserMovieRates());
+        self::assertCount(1, $this->underRates->getUserMovieRates());
+        self::assertCount(3, $userRates->getUserRates());
     }
 }

@@ -14,24 +14,24 @@ class UserReport
     private float $normCoefficient;
     private float $overUnderRateCoefficient;
 
-    private UserMovieRates $overRateMovies;
-    private UserMovieRates $normRateMovies;
-    private UserMovieRates $underRateMovies;
+    private UserMovieRates $overRates;
+    private UserMovieRates $normRates;
+    private UserMovieRates $underRates;
 
     public function __construct(
         User $user,
         float $normCoefficient,
         float $overUnderRateCoefficient,
-        UserMovieRates $overRateMovies,
-        UserMovieRates $normRateMovies,
-        UserMovieRates $underRateMovies,
+        UserMovieRates $overRates,
+        UserMovieRates $normRates,
+        UserMovieRates $underRates,
     ) {
         $this->user = $user;
         $this->normCoefficient = $normCoefficient;
         $this->overUnderRateCoefficient = $overUnderRateCoefficient;
-        $this->overRateMovies = $overRateMovies;
-        $this->normRateMovies = $normRateMovies;
-        $this->underRateMovies = $underRateMovies;
+        $this->overRates = $overRates;
+        $this->normRates = $normRates;
+        $this->underRates = $underRates;
     }
 
     public function getUser(): User
@@ -49,18 +49,18 @@ class UserReport
         return $this->overUnderRateCoefficient;
     }
 
-    public function getOverRateMovies(): UserMovieRates
+    public function getOverRates(): UserMovieRates
     {
-        return $this->overRateMovies;
+        return $this->overRates;
     }
 
-    public function getNormRateMovies(): UserMovieRates
+    public function getNormRates(): UserMovieRates
     {
-        return $this->normRateMovies;
+        return $this->normRates;
     }
 
-    public function getUnderRateMovies(): UserMovieRates
+    public function getUnderRates(): UserMovieRates
     {
-        return $this->underRateMovies;
+        return $this->underRates;
     }
 }

@@ -4,8 +4,9 @@ declare(strict_types=1);
 
 namespace Areyounormis\Report;
 
-use Areyounormis\UserMovie\RelativeRates;
 use Areyounormis\UserMovie\UserMovieRates;
+use Areyounormis\UserRate\UserRateFactory;
+use Areyounormis\UserRate\UserRates;
 
 class RatesCollector
 {
@@ -13,29 +14,28 @@ class RatesCollector
     protected const UNDER_RATE_COEFFICIENT = -0.5;
     protected const NORM_RATE_COEFFICIENT = 0.06;
 
-    public function collectRates(
+    public function collectUserRates(
         UserMovieRates $userMovieRates,
-        UserMovieRates &$overRateMovies,
-        UserMovieRates &$normRateMovies,
-        UserMovieRates &$underRateMovies,
-        RelativeRates &$relativeRates,
-    ): void {
-        foreach ($userMovieRates->getUserMovieRates() as $userMovieRate) {
-            $relativeRate = $userMovieRate->getRelativeRate();
-            $relativeRates->addOne($relativeRate);
+        UserMovieRates &$overRates,
+        UserMovieRates &$normRates,
+        UserMovieRates &$underRates,
+    ): UserRates {
+        $userRates = UserRateFactory::makeUserRates();
 
-            $relativeRateValue = $relativeRate->getValue();
-            if ($relativeRateValue > self::OVER_RATE_COEFFICIENT) {
-                $overRateMovies->addOne($userMovieRate);
-                continue;
-            }
-            if (abs($relativeRateValue) < self::NORM_RATE_COEFFICIENT) {
-                $normRateMovies->addOne($userMovieRate);
-                continue;
-            }
-            if ($relativeRateValue < self::UNDER_RATE_COEFFICIENT) {
-                $underRateMovies->addOne($userMovieRate);
+        foreach ($userMovieRates->getUserMovieRates() as $userMovieRate) {
+            $userRate = $userMovieRate->getUserRate();
+            $userRates->addOne($userRate);
+
+            $relativeDiff = $userRate->getRelativeDiff();
+            if ($relativeDiff > self::OVER_RATE_COEFFICIENT) {
+                $overRates->addOne($userMovieRate);
+            } elseif ($relativeDiff < self::UNDER_RATE_COEFFICIENT) {
+                $underRates->addOne($userMovieRate);
+            } elseif ($userRate->getModuleRelativeDiff() < self::NORM_RATE_COEFFICIENT) {
+                $normRates->addOne($userMovieRate);
             }
         }
+
+        return $userRates;
     }
 }

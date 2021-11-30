@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Kinopoisk;
 
-class UserMovieDto
+class KinopoiskUserMovie
 {
     protected ?string $ruName;
     protected ?string $enName;

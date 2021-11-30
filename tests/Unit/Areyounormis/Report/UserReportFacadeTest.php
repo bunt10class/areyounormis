@@ -4,113 +4,177 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Areyounormis\Report;
 
-use Areyounormis\Report\CoefficientCalculator;
-use Areyounormis\UserMovie\RelativeRate;
-use Areyounormis\UserMovie\RelativeRates;
+use Areyounormis\Report\UserReportFacade;
 use PHPUnit\Framework\TestCase;
+use Tests\Unit\Areyounormis\Factories\UserMovieRateFactory;
+use Tests\Unit\Areyounormis\Factories\UserReportFactory;
 
-class NormCoefficientCalculatorTest extends TestCase
+class UserReportFacadeTest extends TestCase
 {
-    protected CoefficientCalculator $classUnderTest;
+    protected UserReportFactory $factory;
+    protected UserMovieRateFactory $userMovieRateFactory;
 
     public function setUp(): void
     {
         parent::setUp();
 
-        $this->classUnderTest = new CoefficientCalculator();
+        $this->factory = new UserReportFactory();
+
+        $this->userMovieRateFactory = new UserMovieRateFactory();
     }
 
     /**
      * @group unit
      * @group areyounormis
-     * @group coefficient_calculator
+     * @group user_report_facade
      */
-    public function testCalculateNormCoefficientWithoutRelativeRates(): void
+    public function testToArrayGetValidStructure(): void
     {
-        $relativeRates = new RelativeRates();
+        $userReport = $this->factory->makeUserReport();
 
-        $result = $this->classUnderTest->calculateNormCoefficient($relativeRates);
+        $classUnderTest = new UserReportFacade($userReport);
 
-        self::assertEquals(1, $result);
+        $result = $classUnderTest->getPrettyData();
+
+        self::assertArrayHasKey('user', $result);
+        $user = $result['user'];
+        self::assertIsArray($user);
+        self::assertArrayHasKey('id', $user);
+        self::assertArrayHasKey('login', $user);
+
+        self::assertArrayHasKey('norm_coefficient', $result);
+        self::assertArrayHasKey('over_under_rate_coefficient', $user);
+
+        self::assertUserMovieRatesHasValidStructure('over_rates', $result);
+        self::assertUserMovieRatesHasValidStructure('norm_rates', $result);
+        self::assertUserMovieRatesHasValidStructure('under_rates', $result);
+    }
+
+    protected static function assertUserMovieRatesHasValidStructure(string $type, array $result): void
+    {
+        self::assertArrayHasKey($type, $result);
+        $userMovieRates = $result[$type];
+        self::assertIsArray($userMovieRates);
+        $userMovieRate = $userMovieRates[0];
+        self::assertIsArray($userMovieRate);
+        self::assertArrayHasKey('relative_rate', $userMovieRate);
+        self::assertArrayHasKey('user_vote', $userMovieRate);
+        self::assertArrayHasKey('vote', $userMovieRate);
+        self::assertArrayHasKey('name', $userMovieRate);
+        self::assertArrayHasKey('link', $userMovieRate);
     }
 
     /**
      * @group unit
      * @group areyounormis
-     * @group coefficient_calculator
+     * @group user_report_facade
      */
-    public function testCalculateNormCoefficientWithZeroRelativeRates(): void
+    public function testToArrayGetRightUserAndCoefficientData(): void
     {
-        $relativeRates = new RelativeRates();
-        $relativeRates->addOne(new RelativeRate(0));
-        $relativeRates->addOne(new RelativeRate(0));
+        $userId = 123;
+        $userLogin = 'some_login';
+        $normCoefficient = 0.456;
+        $overUnderRateCoefficient = -0.789;
+        $userReport = $this->factory->makeUserReport([
+            'user_id' => $userId,
+            'user_login' => $userLogin,
+            'norm_coefficient' => $normCoefficient,
+            'over_under_rate_coefficient' => $overUnderRateCoefficient,
+        ]);
+        $classUnderTest = new UserReportFacade($userReport);
 
-        $result = $this->classUnderTest->calculateNormCoefficient($relativeRates);
+        $result = $classUnderTest->getPrettyData();
 
-        self::assertEquals(1, $result);
+        self::assertEquals($userId, $result['user']['id']);
+        self::assertEquals($userId, $result['user']['id']);
+        self::assertEquals($normCoefficient, $result['norm_coefficient']);
+        self::assertEquals($overUnderRateCoefficient, $result['over_under_rate_coefficient']);
     }
 
     /**
      * @group unit
      * @group areyounormis
-     * @group coefficient_calculator
+     * @group user_report_facade
      */
-    public function testCalculateNormCoefficientWithPositiveRelativeRates(): void
+    public function testToArrayGetRightNumberUserMovieRates(): void
     {
-        $relativeRates = new RelativeRates();
-        $relativeRates->addOne(new RelativeRate(0.2));
-        $relativeRates->addOne(new RelativeRate(0.8));
+        $overRates = $this->userMovieRateFactory->makeUserMovieRatesWithChildren($overRateNumber = 2);
+        $normRates = $this->userMovieRateFactory->makeUserMovieRatesWithChildren($normRateNumber = 3);
+        $underRates = $this->userMovieRateFactory->makeUserMovieRatesWithChildren($underRateNumber = 4);
+        $userReport = $this->factory->makeUserReport([
+            'over_rates' => $overRates,
+            'norm_rates' => $normRates,
+            'under_rates' => $underRates,
+        ]);
+        $classUnderTest = new UserReportFacade($userReport);
 
-        $result = $this->classUnderTest->calculateNormCoefficient($relativeRates);
+        $result = $classUnderTest->getPrettyData();
 
-        self::assertEquals(0.5, $result);
+        self::assertCount($overRateNumber, $result['over_rates']);
+        self::assertCount($normRateNumber, $result['norm_rates']);
+        self::assertCount($underRateNumber, $result['under_rates']);
     }
 
     /**
      * @group unit
      * @group areyounormis
-     * @group coefficient_calculator
+     * @group user_report_facade
      */
-    public function testCalculateNormCoefficientWithNegativeRelativeRates(): void
+    public function testToArrayGetRightOverRatesData(): void
     {
-        $relativeRates = new RelativeRates();
-        $relativeRates->addOne(new RelativeRate(-0.4));
-        $relativeRates->addOne(new RelativeRate(-0.6));
-
-        $result = $this->classUnderTest->calculateNormCoefficient($relativeRates);
-
-        self::assertEquals(0.5, $result);
+        $this->testToArrayRightUserMovieRatesData('over_rates');
     }
 
     /**
      * @group unit
      * @group areyounormis
-     * @group coefficient_calculator
+     * @group user_report_facade
      */
-    public function testCalculateNormCoefficientWithVariousRelativeRates(): void
+    public function testToArrayGetRightNormRatesData(): void
     {
-        $relativeRates = new RelativeRates();
-        $relativeRates->addOne(new RelativeRate(0.9));
-        $relativeRates->addOne(new RelativeRate(0));
-        $relativeRates->addOne(new RelativeRate(-0.6));
-
-        $result = $this->classUnderTest->calculateNormCoefficient($relativeRates);
-
-        self::assertEquals(0.5, $result);
+        $this->testToArrayRightUserMovieRatesData('norm_rates');
     }
 
     /**
      * @group unit
      * @group areyounormis
-     * @group coefficient_calculator
+     * @group user_report_facade
      */
-    public function testCalculateNormCoefficientRightPrecision(): void
+    public function testToArrayGetRightUnderRatesData(): void
     {
-        $relativeRates = new RelativeRates();
-        $relativeRates->addOne(new RelativeRate(0.1001));
+        $this->testToArrayRightUserMovieRatesData('under_rates');
+    }
 
-        $result = $this->classUnderTest->calculateNormCoefficient($relativeRates);
+    protected function testToArrayRightUserMovieRatesData($type): void
+    {
+        $ruName = 'некоторое имя';
+        $enName = 'some name';
+        $link = 'https://some_url';
+        $vote = 'some_vote';
+        $userVote = 'some_user_vote';
+        $relatedRate = 0.1;
+        $userMovieRates = $this->userMovieRateFactory->makeEmptyUserMovieRates();
+        $userMovieRates->addOne($this->userMovieRateFactory->makeUserMovieRate([
+            'ru_name' => $ruName,
+            'en_name' => $enName,
+            'link' => $link,
+            'vote' => $vote,
+            'user_vote' => $userVote,
+            'relative_rate' => $relatedRate,
+        ]));
+        $userReport = $this->factory->makeUserReport([
+            $type => $userMovieRates,
+        ]);
 
-        self::assertEquals(0.9, $result);
+        $classUnderTest = new UserReportFacade($userReport);
+
+        $result = $classUnderTest->getPrettyData();
+        $userMovieRateData = $result[$type][0];
+        self::assertEquals($ruName, $userMovieRateData['ru_name']);
+        self::assertEquals($enName, $userMovieRateData['en_name']);
+        self::assertEquals($link, $userMovieRateData['link']);
+        self::assertEquals($vote, $userMovieRateData['vote']);
+        self::assertEquals($userVote, $userMovieRateData['user_vote']);
+        self::assertEquals($relatedRate, $userMovieRateData['relative_rate']);
     }
 }

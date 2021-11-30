@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Areyounormis\UserMovie\Models\ClientRequest\Parser;
+namespace Areyounormis\ClientRequest\Parser;
 
 class RequestParserHelper
 {

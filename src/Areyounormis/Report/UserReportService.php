@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Areyounormis\Report;
 
 use Areyounormis\Kinopoisk\UserMovieRateRepository;
-use Areyounormis\UserMovie\RelativeRates;
 use Areyounormis\UserMovie\User;
 use Areyounormis\UserMovie\UserMovieRates;
 
@@ -31,26 +30,24 @@ class UserReportService
 
         $userMovies = $this->userReportRepository->getUserMovieRatesByUserId($user->getId());
 
-        $overRateMovie = new UserMovieRates();
-        $normRateMovies = new UserMovieRates();
-        $underRateMovies = new UserMovieRates();
-        $relativeRates = new RelativeRates();
+        $overRates = new UserMovieRates();
+        $normRates = new UserMovieRates();
+        $underRates = new UserMovieRates();
 
-        $this->ratesCalculator->collectRates(
+        $userRates = $this->ratesCalculator->collectUserRates(
             $userMovies,
-            $overRateMovie,
-            $normRateMovies,
-            $underRateMovies,
-            $relativeRates,
+            $overRates,
+            $normRates,
+            $underRates,
         );
 
         return new UserReport(
             $user,
-            $this->coefficientCalculator->calculateNormCoefficient($relativeRates),
-            $this->coefficientCalculator->calculateOverUnderRateCoefficient($relativeRates),
-            $overRateMovie,
-            $normRateMovies,
-            $underRateMovies,
+            $this->coefficientCalculator->calculateNormCoefficient($userRates),
+            $this->coefficientCalculator->calculateOverUnderRateCoefficient($userRates),
+            $overRates,
+            $normRates,
+            $underRates,
         );
     }
 }

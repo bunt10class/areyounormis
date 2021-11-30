@@ -4,46 +4,40 @@ declare(strict_types=1);
 
 namespace Areyounormis\Report;
 
-use Areyounormis\UserMovie\RelativeRates;
+use Areyounormis\UserRate\UserRates;
 
 class CoefficientCalculator
 {
     public const NORM_COEFFICIENT_PRECISION = 3;
     public const OVER_UNDER_RATE_COEFFICIENT_PRECISION = 3;
 
-    public function calculateNormCoefficient(RelativeRates $relativeRates): float
+    public function calculateNormCoefficient(UserRates $userRates): float
     {
-        $rateSum = 0;
-        $count = 0;
-        foreach ($relativeRates->getRelativeRates() as $relativeRate) {
-            $count++;
-            $rateSum += abs($relativeRate->getValue());
+        $count = $userRates->getCount();
+        if (!$count) {
+            return 1;
         }
 
-        if ($count) {
-            $unNormalCoefficient = $rateSum / $count;
-        } else {
-            $unNormalCoefficient = 0;
+        $moduleRelativeDiffSum = 0;
+        foreach ($userRates->getUserRates() as $userRate) {
+            $moduleRelativeDiffSum += $userRate->getModuleRelativeDiff();
         }
 
-        return 1 - round($unNormalCoefficient, self::NORM_COEFFICIENT_PRECISION);
+        return 1 - round($moduleRelativeDiffSum / $count, self::NORM_COEFFICIENT_PRECISION);
     }
 
-    public function calculateOverUnderRateCoefficient(RelativeRates $relativeRates): float
+    public function calculateOverUnderRateCoefficient(UserRates $userRates): float
     {
-        $rateSum = 0;
-        $count = 0;
-        foreach ($relativeRates->getRelativeRates() as $relativeRate) {
-            $count++;
-            $rateSum += $relativeRate->getValue();
+        $count = $userRates->getCount();
+        if (!$count) {
+            return 0;
         }
 
-        if ($count) {
-            $overUnderRateCoefficient = $rateSum / $count;
-        } else {
-            $overUnderRateCoefficient = 0;
+        $relativeDiffSum = 0;
+        foreach ($userRates->getUserRates() as $userRate) {
+            $relativeDiffSum += $userRate->getRelativeDiff();
         }
 
-        return round($overUnderRateCoefficient, self::OVER_UNDER_RATE_COEFFICIENT_PRECISION);
+        return round($relativeDiffSum / $count, self::OVER_UNDER_RATE_COEFFICIENT_PRECISION);
     }
 }

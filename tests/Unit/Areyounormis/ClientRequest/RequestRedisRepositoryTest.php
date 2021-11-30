@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Areyounormis\ClientRequest;
 
-use Areyounormis\UserMovie\Models\ClientRequest\RequestRedisRepository;
+use Areyounormis\ClientRequest\RequestRedisRepository;
 use PHPUnit\Framework\TestCase;
 use Tests\Unit\Areyounormis\Mocks\RedisClientMock;
 

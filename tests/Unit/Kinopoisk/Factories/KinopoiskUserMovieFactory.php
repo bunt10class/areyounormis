@@ -6,9 +6,10 @@ namespace Tests\Unit\Kinopoisk\Factories;
 
 use Faker\Factory;
 use Faker\Generator;
-use Kinopoisk\UserMovieDto;
+use Kinopoisk\KinopoiskUserMovie;
+use Kinopoisk\KinopoiskUserMovies;
 
-class UserMovieDtoFactory
+class KinopoiskUserMovieFactory
 {
     protected Generator $enFaker;
     protected Generator $ruFaker;
@@ -19,9 +20,9 @@ class UserMovieDtoFactory
         $this->ruFaker = Factory::create('ru_RU');
     }
 
-    public function makeUserMovieDto(array $data = []): UserMovieDto
+    public function makeKinopoiskUserMovie(array $data = []): KinopoiskUserMovie
     {
-        return new UserMovieDto(
+        return new KinopoiskUserMovie(
             $data['ru_name'] ?? $this->ruFaker->domainName,
             $data['en_name'] ?? $this->enFaker->domainName,
             $data['link'] ?? 'https://' . $this->enFaker->domainName,
@@ -31,5 +32,21 @@ class UserMovieDtoFactory
             $data['vote_date'] ?? $this->enFaker->date(),
             $data['user_vote'] ?? $this->enFaker->numberBetween(1, 10),
         );
+    }
+
+    public function makeKinopoiskUserMoviesWithUserMovie(int $number): KinopoiskUserMovies
+    {
+        $result = new KinopoiskUserMovies();
+
+        for ($i = 0; $i < $number; $i++) {
+            $result->addOne($this->makeKinopoiskUserMovie());
+        }
+
+        return $result;
+    }
+
+    public function makeEmptyKinopoiskUserMovies(): KinopoiskUserMovies
+    {
+        return $this->makeKinopoiskUserMoviesWithUserMovie(0);
     }
 }

@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Kinopoisk;
 
-class UserMoviesDto
+class KinopoiskUserMovies
 {
-    /** @var UserMovieDto[] */
+    /** @var KinopoiskUserMovie[] */
     protected array $userMovies = [];
 
-    public function addOne(UserMovieDto $userMovie): void
+    public function addOne(KinopoiskUserMovie $userMovie): void
     {
         $this->userMovies[] = $userMovie;
     }
@@ -17,7 +17,7 @@ class UserMoviesDto
     public function addMany(array $userMovies): void
     {
         foreach ($userMovies as $userMovie) {
-            if (!$userMovie instanceof UserMovieDto) {
+            if (!$userMovie instanceof KinopoiskUserMovie) {
                 continue;
             }
 

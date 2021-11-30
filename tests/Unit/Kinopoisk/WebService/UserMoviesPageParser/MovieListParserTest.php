@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Kinopoisk\WebService\UserMoviesPageParser;
 
-use Kinopoisk\UserMovieDto;
+use Kinopoisk\KinopoiskUserMovie;
 use Kinopoisk\WebService\UserMoviesPageParser\MovieListParser;
 use Tests\Unit\Kinopoisk\Factories\HtmlMoviesFactory;
 

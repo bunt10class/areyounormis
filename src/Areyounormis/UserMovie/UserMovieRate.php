@@ -4,27 +4,22 @@ declare(strict_types=1);
 
 namespace Areyounormis\UserMovie;
 
+use Areyounormis\UserRate\UserRate;
+
 class UserMovieRate
 {
-    protected string $userVote;
-    protected RelativeRate $relativeRate;
+    protected UserRate $userRate;
     protected Movie $movie;
 
-    public function __construct(string $userVote, RelativeRate $relativeRate, Movie $movie)
+    public function __construct(UserRate $userRate, Movie $movie)
     {
-        $this->userVote = $userVote;
-        $this->relativeRate = $relativeRate;
+        $this->userRate = $userRate;
         $this->movie = $movie;
     }
 
-    public function getUserVote(): string
+    public function getUserRate(): UserRate
     {
-        return $this->userVote;
-    }
-
-    public function getRelativeRate(): RelativeRate
-    {
-        return $this->relativeRate;
+        return $this->userRate;
     }
 
     public function getMovie(): Movie

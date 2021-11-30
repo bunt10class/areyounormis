@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace Kinopoisk\WebService\UserMoviesPageParser;
 
-use Kinopoisk\UserMoviesDto;
+use Kinopoisk\KinopoiskUserMovies;
 
 class UserMoviesPage
 {
     protected bool $isCaptcha;
-    protected ?UserMoviesDto $userMoviesDto;
+    protected ?KinopoiskUserMovies $userMoviesDto;
 
-    public function __construct(bool $isCaptcha, ?UserMoviesDto $userMoviesDto)
+    public function __construct(bool $isCaptcha, ?KinopoiskUserMovies $userMoviesDto)
     {
         $this->isCaptcha = $isCaptcha;
         $this->userMoviesDto = $userMoviesDto;
@@ -22,7 +22,7 @@ class UserMoviesPage
         return $this->isCaptcha;
     }
 
-    public function getUserMoviesDto(): ?UserMoviesDto
+    public function getUserMoviesDto(): ?KinopoiskUserMovies
     {
         return $this->userMoviesDto;
     }

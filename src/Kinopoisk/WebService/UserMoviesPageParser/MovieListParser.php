@@ -5,17 +5,17 @@ declare(strict_types=1);
 namespace Kinopoisk\WebService\UserMoviesPageParser;
 
 use DOMElement;
-use Kinopoisk\UserMovieDto;
-use Kinopoisk\UserMoviesDto;
+use Kinopoisk\KinopoiskUserMovie;
+use Kinopoisk\KinopoiskUserMovies;
 
 /**
  * todo систематизировать: подумать как разнести по разным классам получение разных данных
  */
 class MovieListParser
 {
-    public function getUserMoviesDto(DOMElement $moviesList): UserMoviesDto
+    public function getUserMoviesDto(DOMElement $moviesList): KinopoiskUserMovies
     {
-        $movies = new UserMoviesDto();
+        $movies = new KinopoiskUserMovies();
 
         foreach ($moviesList->childNodes as $movieListChild) {
             if (!$movieListChild instanceof DOMElement) {
@@ -43,7 +43,7 @@ class MovieListParser
         return false;
     }
 
-    protected function parseMovieData(DOMElement $movie): UserMovieDto
+    protected function parseMovieData(DOMElement $movie): KinopoiskUserMovie
     {
         $info = [];
 
@@ -66,7 +66,7 @@ class MovieListParser
                 }
             }
         }
-        return new UserMovieDto(
+        return new KinopoiskUserMovie(
             $info['ru_name'] ?? null,
             $info['en_name'] ?? null,
             $info['link'] ?? null,

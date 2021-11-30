@@ -9,14 +9,12 @@ class Movie
     protected ?string $ruName;
     protected ?string $enName;
     protected ?string $link;
-    protected string $vote;
 
-    public function __construct(?string $ruName, ?string $enName, ?string $link, string $vote)
+    public function __construct(?string $ruName, ?string $enName, ?string $link)
     {
         $this->ruName = $ruName;
         $this->enName = $enName;
         $this->link = $link;
-        $this->vote = $vote;
     }
 
     public function getRuName(): ?string
@@ -32,10 +30,5 @@ class Movie
     public function getLink(): ?string
     {
         return $this->link;
-    }
-
-    public function getVote(): string
-    {
-        return $this->vote;
     }
 }
