@@ -4,12 +4,15 @@ RUN apt-get update && apt-get install -y \
     curl \
     wget \
     git \
+    zip \
     libfreetype6-dev \
     libjpeg62-turbo-dev \
 	libpng-dev \
 	libonig-dev \
 	libzip-dev \
-    && docker-php-ext-install -j$(nproc) iconv mbstring mysqli pdo_mysql zip \
+	libxml2-dev \
+    && pecl install redis \
+    && docker-php-ext-install -j$(nproc) iconv mbstring mysqli pdo_mysql zip dom \
 	&& docker-php-ext-configure gd --with-freetype --with-jpeg \
     && docker-php-ext-install -j$(nproc) gd
 

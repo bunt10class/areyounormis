@@ -4,8 +4,13 @@
     },
     "require": {
         "php": ">=8.0",
+        "fzaninotto/faker": "^1.5",
         "guzzlehttp/guzzle": "^7.0",
-        "predis/predis": "^1.1"
+        "predis/predis": "^1.1",
+        "ext-curl": "*",
+        "ext-http": "*",
+        "ext-dom": "*",
+        "ext-libxml": "*"
     },
     "require-dev": {
         "phpunit/phpunit": "^9.5",
@@ -13,7 +18,9 @@
     },
     "autoload": {
         "psr-4": {
-            "Areyounormis\\": "src/Areyounormis"
+            "Areyounormis\\": "src/Areyounormis",
+            "Core\\": "src/Core",
+            "Kinopoisk\\": "src/Kinopoisk"
         }
     },
     "autoload-dev": {
@@ -22,6 +29,7 @@
         }
     },
     "scripts": {
-        "tests": "./vendor/bin/phpunit"
+        "tests": "./vendor/bin/phpunit",
+        "tests-group": "@tests --group="
     }
 }
