@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Tests\Unit\Core;
 
 use Core\Config;
-use Core\Exceptions\InvalidArgumentException;
+use Core\Exceptions\InvalidArgumentConfigException;
 use Faker\Factory;
 use Faker\Generator;
 use PHPUnit\Framework\TestCase;
@@ -153,7 +153,7 @@ class ConfigTest extends TestCase
      */
     public function testGetNotExistentKey(): void
     {
-        self::expectException(InvalidArgumentException::class);
+        self::expectException(InvalidArgumentConfigException::class);
 
         $this->classUnderTest->get('some_key');
     }
@@ -187,5 +187,57 @@ class ConfigTest extends TestCase
         $this->classUnderTest->set($key, $nextValue);
 
         self::assertEquals($nextValue, $this->classUnderTest->get($key));
+    }
+
+    /**
+     * @group unit
+     * @group core
+     * @group config
+     */
+    public function testGetByCompositeKey(): void
+    {
+        $value = 'some_value';
+
+        $this->classUnderTest->set('key1', [
+            'key2' => [
+                'key3' => $value
+            ],
+        ]);
+
+        self::assertEquals($value, $this->classUnderTest->get('key1.key2.key3'));
+    }
+
+    /**
+     * @group unit
+     * @group core
+     * @group config
+     */
+    public function testGetByCompositeKeyWithInvalidValue(): void
+    {
+        self::expectException(InvalidArgumentConfigException::class);
+
+        $this->classUnderTest->set('key1', [
+            'key2' => 'not_array',
+        ]);
+
+        $this->classUnderTest->get('key1.key2.key3');
+    }
+
+    /**
+     * @group unit
+     * @group core
+     * @group config
+     */
+    public function testGetByCompositeKeyWithNonExistentKey(): void
+    {
+        self::expectException(InvalidArgumentConfigException::class);
+
+        $this->classUnderTest->set('key1', [
+            'key2' => [
+                'key4' => 'some_value',
+            ],
+        ]);
+
+        $this->classUnderTest->get('key1.key2.key3');
     }
 }

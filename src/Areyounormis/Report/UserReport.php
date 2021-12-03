@@ -4,34 +4,28 @@ declare(strict_types=1);
 
 namespace Areyounormis\Report;
 
-use Areyounormis\UserMovie\User;
-use Areyounormis\UserMovie\UserMovieRates;
+use Areyounormis\Coefficient\Coefficients;
+use Areyounormis\User\User;
+use Areyounormis\Movie\MovieVotes;
+use Areyounormis\Vote\VoteSystem;
 
 class UserReport
 {
-    private User $user;
-
-    private float $normCoefficient;
-    private float $overUnderRateCoefficient;
-
-    private UserMovieRates $overRates;
-    private UserMovieRates $normRates;
-    private UserMovieRates $underRates;
+    protected User $user;
+    protected Coefficients $coefficients;
+    protected VoteSystem $voteSystem;
+    protected MovieVotes $movieVotes;
 
     public function __construct(
         User $user,
-        float $normCoefficient,
-        float $overUnderRateCoefficient,
-        UserMovieRates $overRates,
-        UserMovieRates $normRates,
-        UserMovieRates $underRates,
+        Coefficients $coefficients,
+        VoteSystem $voteSystem,
+        MovieVotes $userMovieRates,
     ) {
         $this->user = $user;
-        $this->normCoefficient = $normCoefficient;
-        $this->overUnderRateCoefficient = $overUnderRateCoefficient;
-        $this->overRates = $overRates;
-        $this->normRates = $normRates;
-        $this->underRates = $underRates;
+        $this->coefficients = $coefficients;
+        $this->voteSystem = $voteSystem;
+        $this->movieVotes = $userMovieRates;
     }
 
     public function getUser(): User
@@ -39,28 +33,18 @@ class UserReport
         return $this->user;
     }
 
-    public function getNormCoefficient(): float
+    public function getCoefficients(): Coefficients
     {
-        return $this->normCoefficient;
+        return $this->coefficients;
     }
 
-    public function getOverUnderRateCoefficient(): float
+    public function getVoteSystem(): VoteSystem
     {
-        return $this->overUnderRateCoefficient;
+        return $this->voteSystem;
     }
 
-    public function getOverRates(): UserMovieRates
+    public function getMovieVotes(): MovieVotes
     {
-        return $this->overRates;
-    }
-
-    public function getNormRates(): UserMovieRates
-    {
-        return $this->normRates;
-    }
-
-    public function getUnderRates(): UserMovieRates
-    {
-        return $this->underRates;
+        return $this->movieVotes;
     }
 }

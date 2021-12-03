@@ -22,6 +22,7 @@ class RequestRedisRepositoryTest extends TestCase
     /**
      * @group unit
      * @group areyounormis
+     * @group client_request
      * @group request_redis_repository
      */
     public function testSaveGetHeaders(): void
@@ -39,6 +40,7 @@ class RequestRedisRepositoryTest extends TestCase
     /**
      * @group unit
      * @group areyounormis
+     * @group client_request
      * @group request_redis_repository
      */
     public function testSaveGetEmptyHeaders(): void
@@ -51,6 +53,7 @@ class RequestRedisRepositoryTest extends TestCase
     /**
      * @group unit
      * @group areyounormis
+     * @group client_request
      * @group request_redis_repository
      */
     public function testGetUnExistentHeaders(): void
@@ -63,6 +66,7 @@ class RequestRedisRepositoryTest extends TestCase
     /**
      * @group unit
      * @group areyounormis
+     * @group client_request
      * @group request_redis_repository
      */
     public function testGetDeletedHeaders(): void

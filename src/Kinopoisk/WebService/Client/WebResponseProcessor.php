@@ -12,8 +12,12 @@ class WebResponseProcessor
         'type' => 'captcha',
     ];
 
-    public function process(ResponseInterface $response): WebResponse
+    public function process(?ResponseInterface $response): WebResponse
     {
+        if (is_null($response)) {
+            return new WebResponse(false, false, '');
+        }
+
         $content = $response->getBody()->getContents();
 
         $isSuccess = $response->getStatusCode() === 200;

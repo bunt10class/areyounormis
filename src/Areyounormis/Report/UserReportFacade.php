@@ -4,44 +4,97 @@ declare(strict_types=1);
 
 namespace Areyounormis\Report;
 
-use Areyounormis\UserMovie\UserMovieRates;
+use Areyounormis\Movie\MovieHelper;
+use Areyounormis\Movie\MovieVote;
+use Areyounormis\Movie\MovieVotes;
 
 class UserReportFacade
 {
-    private UserReport $userReport;
+    protected const VOTES_PRECISION = 3;
 
-    public function __construct(UserReport $userReport)
-    {
+    protected UserReport $userReport;
+    protected int $overRateNumber;
+    protected int $underRateNumber;
+
+    public function __construct(
+        UserReport $userReport,
+    ) {
         $this->userReport = $userReport;
     }
 
-    public function getPrettyData(): array
+    public function getPrettyUserReport(): array
     {
-        $user = $this->userReport->getUser();
-
         return [
-            'user' => [
-                'id' => $user->getId(),
-                'login' => $user->getLogin(),
-            ],
-            'norm_coefficient' => $this->userReport->getNormCoefficient(),
-            'over_under_rate_coefficient' => $this->userReport->getOverUnderRateCoefficient(),
-            'over_rates' => $this->getPrettyDataUserMovieRates($this->userReport->getOverRates()),
-            'norm_rates' => $this->getPrettyDataUserMovieRates($this->userReport->getNormRates()),
-            'under_rates' => $this->getPrettyDataUserMovieRates($this->userReport->getUnderRates()),
+            'user' => $this->userReport->getUser()->toArray(),
+            'votes_system' => $this->userReport->getVoteSystem()->toArray(),
+            'coefficients' => $this->getPrettyCoefficients(),
+            'movie_number' => $this->userReport->getMovieVotes()->count(),
+            'movie_votes' => $this->getPrettyMovieVotesWithRates(),
         ];
     }
 
-    protected function getPrettyDataUserMovieRates(UserMovieRates $userMovieRates): array
+    protected function getPrettyCoefficients(): array
     {
         $result = [];
 
-        foreach ($userMovieRates->getUserMovieRates() as $userMovieRate) {
-            $result[] = [
-
-            ];
+        foreach ($this->userReport->getCoefficients()->getItems() as $coefficient) {
+            $result[] = $coefficient->toArray();
         }
 
         return $result;
+    }
+
+    protected function getPrettyMovieVotesWithRates(): array
+    {
+        $normRates = new MovieVotes();
+        $overRates = new MovieVotes();
+        $underRates = new MovieVotes();
+
+        foreach ($this->userReport->getMovieVotes()->getItems() as $movieVote) {
+            $vote = $movieVote->getVote();
+
+            if ($vote->getModuleRelativeDiff() <= $this->userReport->getVoteSystem()->getRelativeStep() / 2) {
+                $normRates->addItem($movieVote);
+            } elseif ($vote->getRelativeDiff() > 0) {
+                $overRates->addItem($movieVote);
+            } else {
+                $underRates->addItem($movieVote);
+            }
+        }
+
+        return [
+            'norm_rates' => $this->getPrettyMovieVotes($normRates),
+            'over_rates' => $this->getPrettyMovieVotes($overRates),
+            'under_rates' => $this->getPrettyMovieVotes($underRates),
+        ];
+    }
+
+    protected function getPrettyMovieVotes(MovieVotes $movieVotes): array
+    {
+        $result = [];
+
+        foreach ($movieVotes as $movieVote) {
+            $result[] = $this->getPrettyMovieVote($movieVote);
+        }
+
+        return $result;
+    }
+
+    protected function getPrettyMovieVote(MovieVote $movieVote): array
+    {
+        $vote = $movieVote->getVote();
+        $movie = $movieVote->getMovie();
+
+        return [
+            'movie' => [
+                'name' => MovieHelper::getFullName($movie),
+                'link' => $movie->getLink(),
+            ],
+            'rate' => [
+                'user_vote' => round($vote->getUserVote(), self::VOTES_PRECISION),
+                'site_vote' => round($vote->getSiteVote(), self::VOTES_PRECISION),
+                'absolute_diff' => round($vote->getAbsoluteDiff(), self::VOTES_PRECISION),
+            ],
+        ];
     }
 }

@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Tests\Unit\Core;
 
 use Core\Container;
-use Core\Exceptions\InvalidArgumentException;
+use Core\Exceptions\InvalidArgumentContainerException;
 use PHPUnit\Framework\TestCase;
 use stdClass;
 use Tests\Unit\Core\Mocks\AnotherClass;
@@ -163,7 +163,7 @@ class ContainerTest extends TestCase
      */
     public function testGetNotExistentKey(): void
     {
-        self::expectException(InvalidArgumentException::class);
+        self::expectException(InvalidArgumentContainerException::class);
 
         $this->classUnderTest->get('some_key');
     }
@@ -222,7 +222,7 @@ class ContainerTest extends TestCase
      */
     public function testFailedGetObjectByInvalidClassName(): void
     {
-        self::expectException(InvalidArgumentException::class);
+        self::expectException(InvalidArgumentContainerException::class);
 
         $this->classUnderTest->get('not_class_name');
     }
@@ -248,7 +248,7 @@ class ContainerTest extends TestCase
      */
     public function testGetExceptionByClassNameWithNotObjectArgument(): void
     {
-        self::expectException(InvalidArgumentException::class);
+        self::expectException(InvalidArgumentContainerException::class);
 
         $this->classUnderTest->get(WithNotObjectArgumentClass::class);
     }

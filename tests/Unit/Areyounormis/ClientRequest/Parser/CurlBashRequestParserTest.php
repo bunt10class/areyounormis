@@ -25,6 +25,7 @@ class CurlBashRequestParserTest extends TestCase
     /**
      * @group unit
      * @group areyounormis
+     * @group client_request
      * @group curl_bash_request_parser
      */
     public function testParseEmptyString(): void
@@ -37,6 +38,7 @@ class CurlBashRequestParserTest extends TestCase
     /**
      * @group unit
      * @group areyounormis
+     * @group client_request
      * @group curl_bash_request_parser
      */
     public function testParseStringWithoutAnyQuotationMark(): void
@@ -51,6 +53,7 @@ class CurlBashRequestParserTest extends TestCase
     /**
      * @group unit
      * @group areyounormis
+     * @group client_request
      * @group curl_bash_request_parser
      */
     public function testParseStringWithoutEndpointClosedQuotationMark(): void
@@ -65,6 +68,7 @@ class CurlBashRequestParserTest extends TestCase
     /**
      * @group unit
      * @group areyounormis
+     * @group client_request
      * @group curl_bash_request_parser
      */
     public function testParseEmptyHeaders(): void
@@ -81,6 +85,7 @@ class CurlBashRequestParserTest extends TestCase
     /**
      * @group unit
      * @group areyounormis
+     * @group client_request
      * @group curl_bash_request_parser
      */
     public function testParseStringWithoutHeaderColon(): void
@@ -95,6 +100,7 @@ class CurlBashRequestParserTest extends TestCase
     /**
      * @group unit
      * @group areyounormis
+     * @group client_request
      * @group curl_bash_request_parser
      */
     public function testParseStringWithoutHeaderClosedQuotationMark(): void
@@ -109,6 +115,7 @@ class CurlBashRequestParserTest extends TestCase
     /**
      * @group unit
      * @group areyounormis
+     * @group client_request
      * @group curl_bash_request_parser
      */
     public function testParseValidString(): void

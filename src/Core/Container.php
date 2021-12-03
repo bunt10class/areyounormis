@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Core;
 
 use Closure;
-use Core\Exceptions\InvalidArgumentException;
+use Core\Exceptions\InvalidArgumentContainerException;
 use ReflectionClass;
 use ReflectionException;
 use ReflectionMethod;
@@ -29,7 +29,7 @@ class Container
     }
 
     /**
-     * @throws InvalidArgumentException
+     * @throws InvalidArgumentContainerException
      */
     public function get(string $key): mixed
     {
@@ -57,19 +57,19 @@ class Container
     }
 
     /**
-     * @throws InvalidArgumentException
+     * @throws InvalidArgumentContainerException
      */
     private function tryCreateNewObject(string $key): object
     {
         try {
             return $this->createNewObject($key);
         } catch (ReflectionException $exception) {
-            throw new InvalidArgumentException('Invalid key: ' . $key . ' received in Container');
+            throw new InvalidArgumentContainerException();
         }
     }
 
     /**
-     * @throws InvalidArgumentException
+     * @throws InvalidArgumentContainerException
      * @throws ReflectionException
      */
     private function createNewObject($key): object
@@ -85,7 +85,7 @@ class Container
     }
 
     /**
-     * @throws InvalidArgumentException
+     * @throws InvalidArgumentContainerException
      */
     private function getArgumentsForMethod(ReflectionMethod $constructor): array
     {

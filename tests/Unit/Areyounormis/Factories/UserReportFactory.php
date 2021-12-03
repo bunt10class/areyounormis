@@ -6,8 +6,8 @@ namespace Tests\Unit\Areyounormis\Factories;
 
 use Areyounormis\Report\UserReport;
 use Areyounormis\UserMovie\User;
-use Areyounormis\UserMovie\UserMovieRate;
-use Areyounormis\UserMovie\UserMovieRates;
+use Areyounormis\UserMovie\MovieVote;
+use Areyounormis\UserMovie\MovieVotes;
 use Faker\Factory;
 use Faker\Generator;
 
@@ -29,32 +29,30 @@ class UserReportFactory
         return new UserReport(
             new User(
                 $data['user_id'] ?? $this->enFaker->numberBetween(1),
-                $data['login'] ?? $this->enFaker->userName,
+                $data['user_login'] ?? $this->enFaker->userName,
             ),
             $data['norm_coefficient'] ?? $this->enFaker->randomFloat(3, 0, 1),
             $data['over_under_rate_coefficient'] ?? $this->enFaker->randomFloat(3, -1, 1),
             $this->makeUserMovieRates($data['over_rates'] ?? null),
-            $this->makeUserMovieRates($data['norm_rates'] ?? null),
-            $this->makeUserMovieRates($data['under_rates'] ?? null),
         );
     }
 
-    protected function makeUserMovieRates(?array $userMovieRates): UserMovieRates
+    protected function makeUserMovieRates(?array $userMovieRates): MovieVotes
     {
-        $movies = $this->userMovieRateFactory->makeEmptyUserMovieRates();
+        $result = $this->userMovieRateFactory->makeEmptyUserMovieRates();
 
         if (is_null($userMovieRates)) {
-            $movies->addOne($this->userMovieRateFactory->makeUserMovieRate());
+            $result->addOne($this->userMovieRateFactory->makeUserMovieRate());
         } else {
             foreach ($userMovieRates as $userMovieRate) {
-                if (!$userMovieRate instanceof UserMovieRate) {
+                if (!$userMovieRate instanceof MovieVote) {
                     continue;
                 }
 
-                $movies->addOne($userMovieRate);
+                $result->addOne($userMovieRate);
             }
         }
 
-        return $movies;
+        return $result;
     }
 }

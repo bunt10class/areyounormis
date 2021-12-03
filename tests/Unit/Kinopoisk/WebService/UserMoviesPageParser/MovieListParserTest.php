@@ -65,7 +65,7 @@ class MovieListParserTest extends ParserMain
 
         $result = $this->classUnderTest->getUserMoviesDto($element);
 
-        self::assertCount(count($movies), $result->getUserMovies());
+        self::assertCount(count($movies), $result->getItems());
     }
 
     /**
@@ -97,7 +97,7 @@ class MovieListParserTest extends ParserMain
 
         $result = $this->classUnderTest->getUserMoviesDto($element);
 
-        $userMovie = $result->getUserMovies()[0];
+        $userMovie = $result->getItems()[0];
         self::assertEquals($ruName, $userMovie->getRuName());
         self::assertEquals($enName, $userMovie->getEnName());
         self::assertEquals($link, $userMovie->getLink());

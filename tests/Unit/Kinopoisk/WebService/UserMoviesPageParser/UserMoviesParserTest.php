@@ -87,6 +87,6 @@ class UserMoviesParserTest extends ParserMain
 
         self::assertFalse($result->isCaptcha());
         self::assertNotNull($result->getUserMoviesDto());
-        self::assertCount($movieNumber, $result->getUserMoviesDto()->getUserMovies());
+        self::assertCount($movieNumber, $result->getUserMoviesDto()->getItems());
     }
 }

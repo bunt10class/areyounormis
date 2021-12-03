@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace Kinopoisk\WebService\Client;
 
 use GuzzleHttp\Client as GuzzleClient;
+use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\GuzzleException;
+use Psr\Http\Message\ResponseInterface;
 
 class KinopoiskWebClient
 {
@@ -23,12 +25,9 @@ class KinopoiskWebClient
         $this->responseProcessor = $responseProcessor;
     }
 
-    /**
-     * @throws GuzzleException
-     */
     public function getUserVotesByPage(int $userId, int $page): WebResponse
     {
-        $response = $this->guzzleClient->request(
+        $response = $this->sendRequest(
             'GET',
             WebHelper::getUserVotesPageEndpoint($userId, $page),
             [
@@ -37,5 +36,15 @@ class KinopoiskWebClient
         );
 
         return $this->responseProcessor->process($response);
+    }
+
+    protected function sendRequest($method, $uri, $options): ?ResponseInterface
+    {
+        try {
+            return $this->guzzleClient->request($method, $uri, $options);
+        } catch (ClientException $exception) {
+            //todo process, log
+            return null;
+        }
     }
 }

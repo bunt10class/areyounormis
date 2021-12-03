@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Core;
 
-use Core\Exceptions\InvalidArgumentException;
+use Core\Exceptions\InvalidArgumentConfigException;
 
 class Config
 {
@@ -20,15 +20,36 @@ class Config
     }
 
     /**
-     * @throws InvalidArgumentException
+     * @throws InvalidArgumentConfigException
      */
     public function get(string $key): mixed
     {
+        $embedKeys = explode('.', $key);
+        $key = array_shift($embedKeys);
+
         if (!$this->has($key)) {
-            throw new InvalidArgumentException('Invalid key received in Config');
+            throw new InvalidArgumentConfigException();
         }
 
-        return $this->params[$key];
+        $value = $this->params[$key];
+
+        return $this->getThroughArrays($embedKeys, $value);
+    }
+
+    /**
+     * @throws InvalidArgumentConfigException
+     */
+    protected function getThroughArrays(array $embedKeys, mixed $value): mixed
+    {
+        foreach ($embedKeys as $key) {
+            if (is_array($value) && array_key_exists($key, $value)) {
+                $value = $value[$key];
+            } else {
+                throw new InvalidArgumentConfigException();
+            }
+        }
+
+        return $value;
     }
 
     public function has(string $key): bool

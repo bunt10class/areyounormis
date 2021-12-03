@@ -23,7 +23,7 @@ class MovieListParser
             }
 
             if ($this->isMovieElement($movieListChild)) {
-                $movies->addOne($this->parseMovieData($movieListChild));
+                $movies->addItem($this->parseMovieData($movieListChild));
             }
         }
 

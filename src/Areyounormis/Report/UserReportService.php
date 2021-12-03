@@ -4,50 +4,55 @@ declare(strict_types=1);
 
 namespace Areyounormis\Report;
 
-use Areyounormis\Kinopoisk\UserMovieRateRepository;
-use Areyounormis\UserMovie\User;
-use Areyounormis\UserMovie\UserMovieRates;
+use Areyounormis\Coefficient\CoefficientHelper;
+use Areyounormis\Coefficient\Coefficients;
+use Areyounormis\Coefficient\CoefficientService;
+use Areyounormis\Coefficient\Exceptions\CoefficientException;
+use Areyounormis\SiteData\SiteDataServiceInterface;
+use Areyounormis\User\User;
+use Areyounormis\Vote\Votes;
 
 class UserReportService
 {
-    protected UserMovieRateRepository $userReportRepository;
-    protected CoefficientCalculator $coefficientCalculator;
-    protected RatesCollector $ratesCalculator;
+    protected SiteDataServiceInterface $siteDataService;
+    protected CoefficientService $coefService;
 
     public function __construct(
-        UserMovieRateRepository $userReportRepository,
-        CoefficientCalculator $coefficientCalculator,
-        RatesCollector $ratesCalculator,
+        SiteDataServiceInterface $siteDataService,
+        CoefficientService $coefService,
     ) {
-        $this->userReportRepository = $userReportRepository;
-        $this->coefficientCalculator = $coefficientCalculator;
-        $this->ratesCalculator = $ratesCalculator;
+        $this->siteDataService = $siteDataService;
+        $this->coefService = $coefService;
     }
 
-    public function getUserReport(int $userId): UserReport
+    public function collectUserReportByUserId(string $userId): UserReport
     {
         $user = new User($userId, null);
 
-        $userMovies = $this->userReportRepository->getUserMovieRatesByUserId($user->getId());
-
-        $overRates = new UserMovieRates();
-        $normRates = new UserMovieRates();
-        $underRates = new UserMovieRates();
-
-        $userRates = $this->ratesCalculator->collectUserRates(
-            $userMovies,
-            $overRates,
-            $normRates,
-            $underRates,
-        );
+        $siteData = $this->siteDataService->getByUserId($userId);
 
         return new UserReport(
             $user,
-            $this->coefficientCalculator->calculateNormCoefficient($userRates),
-            $this->coefficientCalculator->calculateOverUnderRateCoefficient($userRates),
-            $overRates,
-            $normRates,
-            $underRates,
+            $this->collectCoefficients($siteData->getVotes()),
+            $siteData->getVoteSystem(),
+            $siteData->getMovieVotes(),
         );
+    }
+
+    public function collectCoefficients(Votes $votes): Coefficients
+    {
+        $coefficients = new Coefficients();
+
+        foreach (CoefficientHelper::TYPES as $type) {
+            try {
+                $coefficient = $this->coefService->calculateCoefficientByVotes($type, $votes);
+            } catch (CoefficientException $exception) {
+                var_dump($exception->getMessage(), $type);
+                continue;
+            }
+            $coefficients->addItem($coefficient);
+        }
+
+        return $coefficients;
     }
 }

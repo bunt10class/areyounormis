@@ -9,23 +9,23 @@ class KinopoiskUserMovies
     /** @var KinopoiskUserMovie[] */
     protected array $userMovies = [];
 
-    public function addOne(KinopoiskUserMovie $userMovie): void
+    public function addItem(KinopoiskUserMovie $userMovie): void
     {
         $this->userMovies[] = $userMovie;
     }
 
-    public function addMany(array $userMovies): void
+    public function addItems(array $userMovies): void
     {
         foreach ($userMovies as $userMovie) {
             if (!$userMovie instanceof KinopoiskUserMovie) {
                 continue;
             }
 
-            $this->addOne($userMovie);
+            $this->addItem($userMovie);
         }
     }
 
-    public function getUserMovies(): array
+    public function getItems(): array
     {
         return $this->userMovies;
     }

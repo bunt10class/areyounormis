@@ -1,31 +1,44 @@
 <?php
 
+use Core\Config;
 use Core\Container;
 
 return [
     /**
+     * core
+     */
+    Config::class => function () {
+        return new Config(require 'dist/parameters.php');
+    },
+
+    /**
      * areyounormis
      */
-    \Areyounormis\UserMovie\Models\ClientRequest\Parser\RequestParserInterface::class => function () {
-        return new \Areyounormis\UserMovie\Models\ClientRequest\Parser\CurlBashRequestParser();
+    \Areyounormis\ClientRequest\Parser\RequestParserInterface::class => function (Container $container) {
+        return $container->get(\Areyounormis\ClientRequest\Parser\CurlBashRequestParser::class);
+    },
+    \Kinopoisk\WebService\Client\RequestServiceInterface::class => function (Container $container) {
+        return $container->get(\Areyounormis\ClientRequest\RequestService::class);
+    },
+    \Areyounormis\SiteData\SiteDataServiceInterface::class => function (Container $container) {
+        return $container->get(\Areyounormis\SiteData\KinopoiskSiteDataService::class);
     },
 
     /**
      * kinopoisk
      */
     \Kinopoisk\KinopoiskUserMovieServiceInterface::class => function (Container $container) {
-        return $container->get(\Kinopoisk\WebUserMoviesService::class);
-    },
-    \Kinopoisk\WebService\Client\RequestServiceInterface::class => function (Container $container) {
-        return $container->get(\Areyounormis\UserMovie\Models\ClientRequest\RequestService::class);
+        return $container->get(\Kinopoisk\WebService\WebUserMoviesService::class);
     },
 
     /**
      * external
      */
-    \Predis\Client::class => function () {
+    \Predis\Client::class => function (Container $container) {
+        /** @var Config $config */
+        $config = $container->get(Config::class);
         return new \Predis\Client([
-            'host' => 'redis',
+            'host' => $config->get('redis.host'),
         ]);
     },
 ];

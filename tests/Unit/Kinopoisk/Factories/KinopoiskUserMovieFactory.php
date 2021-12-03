@@ -23,23 +23,32 @@ class KinopoiskUserMovieFactory
     public function makeKinopoiskUserMovie(array $data = []): KinopoiskUserMovie
     {
         return new KinopoiskUserMovie(
-            $data['ru_name'] ?? $this->ruFaker->domainName,
-            $data['en_name'] ?? $this->enFaker->domainName,
-            $data['link'] ?? 'https://' . $this->enFaker->domainName,
-            $data['kp_vote'] ?? $this->enFaker->randomFloat(3, 1, 10),
-            $data['vote_number'] ?? $this->enFaker->numberBetween(0, 1000000),
-            $data['duration_in_minutes'] ?? $this->enFaker->numberBetween(1, 1000),
-            $data['vote_date'] ?? $this->enFaker->date(),
-            $data['user_vote'] ?? $this->enFaker->numberBetween(1, 10),
+            $data['ru_name'] ?? null,
+            $data['en_name'] ?? null,
+            $data['link'] ?? null,
+            $data['kp_vote'] ?? null,
+            $data['vote_number'] ?? null,
+            $data['duration_in_minutes'] ?? null,
+            $data['vote_date'] ?? null,
+            $data['user_vote'] ?? null,
         );
     }
 
-    public function makeKinopoiskUserMoviesWithUserMovie(int $number): KinopoiskUserMovies
+    public function makeKinopoiskUserMovieWithOne(array $data = []): KinopoiskUserMovies
+    {
+        $userMovie = $this->makeKinopoiskUserMovie($data);
+
+        $result = $this->makeEmptyKinopoiskUserMovies();
+        $result->addItem($userMovie);
+        return $result;
+    }
+
+    public function makeKinopoiskUserMoviesWithSome(int $number): KinopoiskUserMovies
     {
         $result = new KinopoiskUserMovies();
 
         for ($i = 0; $i < $number; $i++) {
-            $result->addOne($this->makeKinopoiskUserMovie());
+            $result->addItem($this->makeKinopoiskUserMovie());
         }
 
         return $result;
@@ -47,6 +56,6 @@ class KinopoiskUserMovieFactory
 
     public function makeEmptyKinopoiskUserMovies(): KinopoiskUserMovies
     {
-        return $this->makeKinopoiskUserMoviesWithUserMovie(0);
+        return $this->makeKinopoiskUserMoviesWithSome(0);
     }
 }
