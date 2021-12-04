@@ -101,6 +101,24 @@ class CoefficientServiceTest extends TestCase
      * @group coefficient
      * @group coefficient_service
      */
+    public function testGetCoefficientWithRightValuePrecision(): void
+    {
+        $classUnderTest = new CoefficientService(
+            new CoefficientCalculatorMock(),
+            new ConfigMock($this->getDefaultConfigData())
+        );
+
+        $result = $classUnderTest->getCoefficient('norm', 0.5001);
+
+        self::assertEquals(0.5, $result->getValue());
+    }
+
+    /**
+     * @group unit
+     * @group areyounormis
+     * @group coefficient
+     * @group coefficient_service
+     */
     public function testGetCoefficientWithSomeLevels(): void
     {
         $level1 = [

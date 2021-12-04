@@ -10,7 +10,8 @@ use Areyounormis\Movie\MovieVotes;
 
 class UserReportFacade
 {
-    protected const VOTES_PRECISION = 3;
+    protected const VOTES_PRECISION = 2;
+    protected const MIN_INTEREST_MODULE_RELATIVE_DIFF = 0.3;
 
     protected UserReport $userReport;
     protected int $overRateNumber;
@@ -18,8 +19,12 @@ class UserReportFacade
 
     public function __construct(
         UserReport $userReport,
+        int $overRateNumber = 10,
+        int $underRateNumber = 10,
     ) {
         $this->userReport = $userReport;
+        $this->overRateNumber = $overRateNumber;
+        $this->underRateNumber = $underRateNumber;
     }
 
     public function getPrettyUserReport(): array
@@ -52,15 +57,17 @@ class UserReportFacade
 
         foreach ($this->userReport->getMovieVotes()->getItems() as $movieVote) {
             $vote = $movieVote->getVote();
+            $moduleRelativeDiff = $vote->getModuleRelativeDiff();
 
-            if ($vote->getModuleRelativeDiff() <= $this->userReport->getVoteSystem()->getRelativeStep() / 2) {
+            if ($moduleRelativeDiff <= $this->userReport->getVoteSystem()->getRelativeStep() / 2) {
                 $normRates->addItem($movieVote);
-            } elseif ($vote->getRelativeDiff() > 0) {
-                $overRates->addItem($movieVote);
-            } else {
-                $underRates->addItem($movieVote);
+            } elseif ($moduleRelativeDiff > self::MIN_INTEREST_MODULE_RELATIVE_DIFF) {
+                $vote->getRelativeDiff() > 0 ? $overRates->addItem($movieVote) : $underRates->addItem($movieVote);
             }
         }
+
+        $overRates = MovieVotesCollector::getTheFirstNumberMaxDiffMovieVotes($overRates, $this->overRateNumber);
+        $underRates = MovieVotesCollector::getTheFirstNumberMaxDiffMovieVotes($underRates, $this->underRateNumber);
 
         return [
             'norm_rates' => $this->getPrettyMovieVotes($normRates),
@@ -73,11 +80,14 @@ class UserReportFacade
     {
         $result = [];
 
-        foreach ($movieVotes as $movieVote) {
+        foreach ($movieVotes->getItems() as $movieVote) {
             $result[] = $this->getPrettyMovieVote($movieVote);
         }
 
-        return $result;
+        return [
+            'number' => $movieVotes->count(),
+            'movie_vote' => $result,
+        ];
     }
 
     protected function getPrettyMovieVote(MovieVote $movieVote): array

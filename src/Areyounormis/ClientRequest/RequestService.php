@@ -26,12 +26,12 @@ class RequestService implements RequestServiceInterface
      */
     public function getHeaders(): array
     {
-        $headers = $this->requestRedisRepository->getHeaders();
-
-        if (is_null($headers)) {
+//        $headers = $this->requestRedisRepository->getHeaders();
+//
+//        if (is_null($headers)) {
             $headers = $this->parseRequest()->getHeaders();
             $this->requestRedisRepository->saveHeaders($headers);
-        }
+//        }
 
         return $headers;
     }

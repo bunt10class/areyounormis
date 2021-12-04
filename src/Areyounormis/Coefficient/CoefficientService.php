@@ -9,6 +9,7 @@ use Areyounormis\Coefficient\Exceptions\InvalidCoefficientConfigException;
 use Areyounormis\Coefficient\Exceptions\InvalidCoefficientTypeException;
 use Areyounormis\Coefficient\Exceptions\InvalidCoefficientValueException;
 use Areyounormis\Vote\Votes;
+use Areyounormis\Vote\VoteSystem;
 use Core\Config;
 use Webmozart\Assert\Assert;
 
@@ -45,7 +46,7 @@ class CoefficientService
         return new Coefficient(
             $type,
             $coefficient['description'],
-            $value,
+            round($value, VoteSystem::PRECISION),
             $level['color'],
             $level['description'],
         );
