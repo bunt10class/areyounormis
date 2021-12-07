@@ -71,6 +71,6 @@ class MovieHelperTest extends TestCase
 
         $result = MovieHelper::getFullName($movie);
 
-        self::assertEquals($ruName . '(' . $enName . ')', $result);
+        self::assertEquals($ruName . ' (' . $enName . ')', $result);
     }
 }

@@ -6,7 +6,7 @@ namespace Tests\Unit\Areyounormis\Factories;
 
 class ConfigDataFactory
 {
-    public static function getCoefficientConfigData($levels = [], $description = ''): array
+    public static function getCoefficientConfigData($levels = [], $name = '', $description = ''): array
     {
         $levelData = [];
         foreach ($levels as $level) {
@@ -18,6 +18,7 @@ class ConfigDataFactory
         }
         return [
             'levels' => $levelData,
+            'name' => $name,
             'description' => $description,
         ];
     }

@@ -45,6 +45,7 @@ class CoefficientService
 
         return new Coefficient(
             $type,
+            $coefficient['name'],
             $coefficient['description'],
             round($value, VoteSystem::PRECISION),
             $level['color'],
@@ -89,6 +90,9 @@ class CoefficientService
             Assert::keyExists($level, 'description');
             Assert::string($level['description']);
         }
+
+        Assert::keyExists($coefficient, 'name');
+        Assert::string($coefficient['name']);
 
         Assert::keyExists($coefficient, 'description');
         Assert::string($coefficient['description']);

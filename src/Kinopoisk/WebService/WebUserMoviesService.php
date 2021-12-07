@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Kinopoisk\WebService;
 
-use GuzzleHttp\Exception\GuzzleException;
 use Kinopoisk\KinopoiskUserMovies;
 use Kinopoisk\KinopoiskUserMovieServiceInterface;
 use Kinopoisk\WebService\Client\KinopoiskWebClient;
@@ -54,7 +53,7 @@ class WebUserMoviesService implements KinopoiskUserMovieServiceInterface
 
         if ($response->isCaptcha()) {
             //todo log
-            var_dump('json captcha');
+//            var_dump('json captcha');
         }
 
         if ($response->isSuccess() && !$response->isCaptcha()) {
@@ -62,7 +61,7 @@ class WebUserMoviesService implements KinopoiskUserMovieServiceInterface
 
             if ($parsingPage->isCaptcha()) {
                 //todo log
-                var_dump('html captcha');
+//                var_dump('html captcha');
             }
 
             $movies = $parsingPage->getUserMoviesDto();

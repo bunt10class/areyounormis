@@ -7,6 +7,7 @@ namespace Areyounormis\Coefficient;
 class Coefficient
 {
     protected string $type;
+    protected string $name;
     protected string $description;
     protected float $value;
     protected string $levelColor;
@@ -14,12 +15,14 @@ class Coefficient
 
     public function __construct(
         string $type,
+        string $name,
         string $description,
         float $value,
         string $levelColor = CoefficientHelper::DEFAULT_LEVEL_COLOR,
         string $levelDescription = '',
     ) {
         $this->type = $type;
+        $this->name = $name;
         $this->description = $description;
         $this->value = $value;
         $this->levelColor = $levelColor;
@@ -29,6 +32,11 @@ class Coefficient
     public function getType(): string
     {
         return $this->type;
+    }
+
+    public function getName(): string
+    {
+        return $this->name;
     }
 
     public function getDescription(): string
@@ -55,6 +63,7 @@ class Coefficient
     {
         return [
             'type' => $this->getType(),
+            'name' => $this->getName(),
             'description' => $this->getDescription(),
             'value' => $this->getValue(),
             'level_color' => $this->getLevelColor(),

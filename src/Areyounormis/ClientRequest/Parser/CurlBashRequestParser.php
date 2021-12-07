@@ -13,6 +13,7 @@ class CurlBashRequestParser implements RequestParserInterface
      */
     public function parse(string $parsedString): RequestDto
     {
+        //todo обработка пустой строки
         $endpoint = $this->retrieveEndpoint($parsedString);
         $headers = $this->retrieveHeaders($parsedString);
 

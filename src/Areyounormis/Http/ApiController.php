@@ -4,10 +4,11 @@ declare(strict_types=1);
 
 namespace Areyounormis\Http;
 
-use Areyounormis\Report\UserReportFacade;
 use Areyounormis\Report\UserReportService;
+use Laminas\Diactoros\Response\JsonResponse;
+use Laminas\Diactoros\ServerRequest;
 
-class Action
+class ApiController
 {
     protected UserReportService $userReportService;
 
@@ -17,14 +18,11 @@ class Action
         $this->userReportService = $userReportService;
     }
 
-    public function process(string $userId)
+    public function getUserReportById(ServerRequest $request): JsonResponse
     {
+        $userId = $request->getQueryParams()['user_id'] ?? '4023229';
         $userReport = $this->userReportService->collectUserReportByUserId($userId);
 
-        $userReportFacade = new UserReportFacade(
-            $userReport,
-        );
-
-        return $userReportFacade->getPrettyUserReport();
+        return new UserReportResponse($userReport);
     }
 }

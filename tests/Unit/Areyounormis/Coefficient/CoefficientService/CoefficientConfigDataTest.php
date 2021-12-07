@@ -28,6 +28,7 @@ class CoefficientConfigDataTest extends TestCase
                     'description' => 'some_description',
                 ],
             ],
+            'name' => 'some_name',
             'description' => 'some_description',
         ];
         $classUnderTest = new CoefficientService(new CoefficientCalculatorMock(), new ConfigMock($configData));
@@ -35,6 +36,57 @@ class CoefficientConfigDataTest extends TestCase
         $classUnderTest->getCoefficient('norm', 0.5);
 
         self::assertTrue(true);
+    }
+
+    /**
+     * @group unit
+     * @group areyounormis
+     * @group coefficient
+     * @group coefficient_service
+     */
+    public function testConfigDataWithoutName(): void
+    {
+        self::expectException(InvalidCoefficientConfigException::class);
+
+        $configData = [
+            'levels' => [
+                [
+                    'upper_limit' => 1,
+                    'color' => 'some_color',
+                    'description' => 'some_description',
+                ],
+            ],
+            'description' => 'some_description',
+        ];
+        $classUnderTest = new CoefficientService(new CoefficientCalculatorMock(), new ConfigMock($configData));
+
+        $classUnderTest->getCoefficient('norm', 0.5);
+    }
+
+    /**
+     * @group unit
+     * @group areyounormis
+     * @group coefficient
+     * @group coefficient_service
+     */
+    public function testConfigDataWithNameNotString(): void
+    {
+        self::expectException(InvalidCoefficientConfigException::class);
+
+        $configData = [
+            'levels' => [
+                [
+                    'upper_limit' => 1,
+                    'color' => 'some_color',
+                    'description' => 'some_description',
+                ],
+            ],
+            'name' => 123,
+            'description' => 'some_description',
+        ];
+        $classUnderTest = new CoefficientService(new CoefficientCalculatorMock(), new ConfigMock($configData));
+
+        $classUnderTest->getCoefficient('norm', 0.5);
     }
 
     /**
@@ -55,6 +107,7 @@ class CoefficientConfigDataTest extends TestCase
                     'description' => 'some_description',
                 ],
             ],
+            'name' => 'some_name',
         ];
         $classUnderTest = new CoefficientService(new CoefficientCalculatorMock(), new ConfigMock($configData));
 
@@ -79,6 +132,7 @@ class CoefficientConfigDataTest extends TestCase
                     'description' => 'some_description',
                 ],
             ],
+            'name' => 'some_name',
             'description' => 123,
         ];
         $classUnderTest = new CoefficientService(new CoefficientCalculatorMock(), new ConfigMock($configData));
@@ -97,6 +151,7 @@ class CoefficientConfigDataTest extends TestCase
         self::expectException(InvalidCoefficientConfigException::class);
 
         $configData = [
+            'name' => 'some_name',
             'description' => 'some_description',
         ];
         $classUnderTest = new CoefficientService(new CoefficientCalculatorMock(), new ConfigMock($configData));
@@ -116,6 +171,7 @@ class CoefficientConfigDataTest extends TestCase
 
         $configData = [
             'levels' => 'not_array',
+            'name' => 'some_name',
             'description' => 'some_description',
         ];
         $classUnderTest = new CoefficientService(new CoefficientCalculatorMock(), new ConfigMock($configData));
@@ -135,6 +191,7 @@ class CoefficientConfigDataTest extends TestCase
 
         $configData = [
             'levels' => [],
+            'name' => 'some_name',
             'description' => 'some_description',
         ];
         $classUnderTest = new CoefficientService(new CoefficientCalculatorMock(), new ConfigMock($configData));
@@ -159,6 +216,7 @@ class CoefficientConfigDataTest extends TestCase
                     'description' => 'some_description',
                 ],
             ],
+            'name' => 'some_name',
             'description' => 'some_description',
         ];
         $classUnderTest = new CoefficientService(new CoefficientCalculatorMock(), new ConfigMock($configData));
@@ -184,6 +242,7 @@ class CoefficientConfigDataTest extends TestCase
                     'description' => 'some_description',
                 ],
             ],
+            'name' => 'some_name',
             'description' => 'some_description',
         ];
         $classUnderTest = new CoefficientService(new CoefficientCalculatorMock(), new ConfigMock($configData));
@@ -209,6 +268,7 @@ class CoefficientConfigDataTest extends TestCase
                     'description' => 'some_description',
                 ],
             ],
+            'name' => 'some_name',
             'description' => 'some_description',
         ];
         $classUnderTest = new CoefficientService(new CoefficientCalculatorMock(), new ConfigMock($configData));
@@ -234,6 +294,7 @@ class CoefficientConfigDataTest extends TestCase
                     'description' => 'some_description',
                 ],
             ],
+            'name' => 'some_name',
             'description' => 'some_description',
         ];
         $classUnderTest = new CoefficientService(new CoefficientCalculatorMock(), new ConfigMock($configData));
@@ -258,6 +319,7 @@ class CoefficientConfigDataTest extends TestCase
                     'description' => 'some_description',
                 ],
             ],
+            'name' => 'some_name',
             'description' => 'some_description',
         ];
         $classUnderTest = new CoefficientService(new CoefficientCalculatorMock(), new ConfigMock($configData));
@@ -284,6 +346,7 @@ class CoefficientConfigDataTest extends TestCase
                     'description' => 'some_description',
                 ],
             ],
+            'name' => 'some_name',
             'description' => 'some_description',
         ];
         $classUnderTest = new CoefficientService(new CoefficientCalculatorMock(), new ConfigMock($configData));
@@ -308,6 +371,7 @@ class CoefficientConfigDataTest extends TestCase
                     'color' => 'some_color',
                 ],
             ],
+            'name' => 'some_name',
             'description' => 'some_description',
         ];
         $classUnderTest = new CoefficientService(new CoefficientCalculatorMock(), new ConfigMock($configData));
@@ -333,6 +397,7 @@ class CoefficientConfigDataTest extends TestCase
                     'description' => 123,
                 ],
             ],
+            'name' => 'some_name',
             'description' => 'some_description',
         ];
         $classUnderTest = new CoefficientService(new CoefficientCalculatorMock(), new ConfigMock($configData));

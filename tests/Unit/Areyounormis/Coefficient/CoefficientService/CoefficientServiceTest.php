@@ -83,13 +83,18 @@ class CoefficientServiceTest extends TestCase
             'color' => $levelColor = 'some_color',
             'description' => $levelDescription = 'some_level_description',
         ];
-        $configData = ConfigDataFactory::getCoefficientConfigData([$level], $description = 'some_description');
+        $configData = ConfigDataFactory::getCoefficientConfigData(
+            [$level],
+            $name = 'some_name',
+            $description = 'some_description',
+        );
         $classUnderTest = new CoefficientService(new CoefficientCalculatorMock(), new ConfigMock($configData));
 
         $result = $classUnderTest->getCoefficient($type = 'norm', $value = 0.5);
 
         self::assertEquals($type, $result->getType());
         self::assertEquals($value, $result->getValue());
+        self::assertEquals($name, $result->getName());
         self::assertEquals($description, $result->getDescription());
         self::assertEquals($levelColor, $result->getLevelColor());
         self::assertEquals($levelDescription, $result->getLevelDescription());
@@ -137,7 +142,7 @@ class CoefficientServiceTest extends TestCase
             'description' => 'description3',
         ];
         $levels = [$level1, $level2, $level3];
-        $configData = ConfigDataFactory::getCoefficientConfigData($levels, 'some_description');
+        $configData = ConfigDataFactory::getCoefficientConfigData($levels, 'some_name', 'some_description');
         $classUnderTest = new CoefficientService(new CoefficientCalculatorMock(), new ConfigMock($configData));
 
         $result = $classUnderTest->getCoefficient('norm', 0.5);
@@ -171,6 +176,6 @@ class CoefficientServiceTest extends TestCase
             'color' => 'some_color',
             'description' => 'some_level_description',
         ];
-        return ConfigDataFactory::getCoefficientConfigData([$level], 'some_description');
+        return ConfigDataFactory::getCoefficientConfigData([$level], 'some_name', 'some_description');
     }
 }

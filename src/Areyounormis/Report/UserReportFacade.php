@@ -66,6 +66,7 @@ class UserReportFacade
             }
         }
 
+        $normRates = MovieVotesCollector::sortMovieVotesByMovieName($normRates);
         $overRates = MovieVotesCollector::getTheFirstNumberMaxDiffMovieVotes($overRates, $this->overRateNumber);
         $underRates = MovieVotesCollector::getTheFirstNumberMaxDiffMovieVotes($underRates, $this->underRateNumber);
 
@@ -86,7 +87,7 @@ class UserReportFacade
 
         return [
             'number' => $movieVotes->count(),
-            'movie_vote' => $result,
+            'movie_votes' => $result,
         ];
     }
 

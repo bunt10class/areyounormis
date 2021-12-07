@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Areyounormis\Report;
 
+use Areyounormis\Movie\MovieHelper;
 use Areyounormis\Movie\MovieVote;
 use Areyounormis\Movie\MovieVotes;
 
@@ -16,7 +17,7 @@ class MovieVotesCollector
         return self::getTheFirstNumberMovieVotes($movieVotes, $number);
     }
 
-    public static function sortMovieVotesByModuleRelativeDiff(MovieVotes $movieVotes, bool $isAsc): MovieVotes
+    public static function sortMovieVotesByModuleRelativeDiff(MovieVotes $movieVotes, bool $isAsc = true): MovieVotes
     {
         $movieVotes = $movieVotes->getItems();
 
@@ -33,6 +34,25 @@ class MovieVotesCollector
                 return $is1LessThan2 ? -1 : 1;
             } else {
                 return $is1LessThan2 ? 1 : -1;
+            }
+        });
+
+        return new MovieVotes($movieVotes);
+    }
+
+    public static function sortMovieVotesByMovieName(MovieVotes $movieVotes, bool $isAsc = true): MovieVotes
+    {
+        $movieVotes = $movieVotes->getItems();
+
+        usort($movieVotes, function (MovieVote $movieVote1, MovieVote $movieVote2) use ($isAsc) {
+            $movieName1 = MovieHelper::getFullName($movieVote1->getMovie());;
+            $movieName2 = MovieHelper::getFullName($movieVote2->getMovie());;
+
+            $result = strnatcasecmp($movieName1, $movieName2);
+            if ($isAsc) {
+                return $result;
+            } else {
+                return $result * -1;
             }
         });
 

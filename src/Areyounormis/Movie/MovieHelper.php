@@ -15,7 +15,7 @@ class MovieHelper
             $fullName = $ruName;
 
             if ($enName) {
-                $fullName .= '(' . $enName . ')';
+                $fullName .= ' (' . $enName . ')';
             }
         } else {
             if ($enName) {

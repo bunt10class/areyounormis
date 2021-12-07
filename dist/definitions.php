@@ -14,6 +14,9 @@ return [
     /**
      * areyounormis
      */
+    \Core\Template\TemplateRenderer::class => function() {
+        return new \Core\Template\TemplateRenderer('templates');
+    },
     \Areyounormis\ClientRequest\Parser\RequestParserInterface::class => function (Container $container) {
         return $container->get(\Areyounormis\ClientRequest\Parser\CurlBashRequestParser::class);
     },

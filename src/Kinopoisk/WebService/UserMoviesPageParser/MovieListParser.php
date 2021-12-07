@@ -58,10 +58,10 @@ class MovieListParser
                         $info = $this->getInfo($childNode);
                         break;
                     case ParserHelper::MOVIE_ELEMENT_CLASS_DATE:
-                        $voteDate = trim($childNode->nodeValue);
+                        $voteDate = $this->trimNodeValue($childNode->nodeValue);
                         break;
                     case ParserHelper::MOVIE_ELEMENT_CLASS_USER_VOTE:
-                        $userVote = (int)trim($childNode->nodeValue);
+                        $userVote = (int)$this->trimNodeValue($childNode->nodeValue);
                         break;
                 }
             }
@@ -89,11 +89,11 @@ class MovieListParser
             if ($childNode->tagName === ParserHelper::MOVIE_ELEMENT_ENTITY_TAG) {
                 switch ($childNode->getAttribute('class')) {
                     case ParserHelper::MOVIE_ELEMENT_CLASS_RU_NAME:
-                        $data['ru_name'] = trim($childNode->nodeValue);
+                        $data['ru_name'] = $this->trimNodeValue($childNode->nodeValue);
                         $data['link'] = $this->getLinkFromRuName($childNode);
                         break;
                     case ParserHelper::MOVIE_ELEMENT_CLASS_EN_NAME:
-                        $data['en_name'] = trim($childNode->nodeValue);
+                        $data['en_name'] = $this->trimNodeValue($childNode->nodeValue);
                         break;
                     case ParserHelper::MOVIE_ELEMENT_CLASS_RATING:
                         $rating = $this->getRating($childNode);
@@ -116,7 +116,7 @@ class MovieListParser
             }
 
             if ($childNode->tagName === 'a') {
-                return trim($childNode->getAttribute('href'));
+                return $this->trimNodeValue($childNode->getAttribute('href'));
             }
         }
         return null;
@@ -130,21 +130,27 @@ class MovieListParser
             if (!$childNode instanceof DOMElement) {
                 continue;
             }
+            $nodeValue = $this->trimNodeValue($childNode->nodeValue);
 
             if ($childNode->tagName === 'b') {
-                $data['kp_vote'] = (float)trim($childNode->nodeValue);
+                $data['kp_vote'] = (float)$nodeValue;
             }
 
             if ($childNode->tagName === 'span') {
                 if (array_key_exists('vote_number', $data)) {
-                    $durationArray = explode(' ', trim($childNode->nodeValue));
+                    $durationArray = explode(' ', $nodeValue);
                     $data['duration_in_minutes'] = (int)$durationArray[0];
                 } else {
-                    $data['vote_number'] = (int)trim($childNode->nodeValue, '()');
+                    $data['vote_number'] = (int)trim($nodeValue, '()');
                 }
             }
         }
 
         return $data;
+    }
+
+    protected function trimNodeValue(string $value): string
+    {
+        return trim(html_entity_decode($value), " \t\n\r\0\x0B\xC2\xA0");
     }
 }
