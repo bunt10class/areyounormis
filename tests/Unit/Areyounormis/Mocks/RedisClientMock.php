@@ -50,13 +50,11 @@ use Predis\Client;
  * @method int hdel($key, array $fields)
  * @method int hexists($key, $field)
  * @method null hget($key, $field)
- * @method array hgetall($key)
  * @method int hincrby($key, $field, $increment)
  * @method string hincrbyfloat($key, $field, $increment)
  * @method array hkeys($key)
  * @method int hlen($key)
  * @method array hmget($key, array $fields)
- * @method mixed hmset($key, array $dictionary)
  * @method array hscan($key, $cursor, array $options = null)
  * @method int hset($key, $field, $value)
  * @method int hsetnx($key, $field, $value)
@@ -157,7 +155,7 @@ class RedisClientMock extends Client
 {
     protected array $storage = [];
 
-    public function get($key): null|string
+    public function get($key): mixed
     {
         if (array_key_exists($key, $this->storage)) {
             return $this->storage[$key];
@@ -165,10 +163,10 @@ class RedisClientMock extends Client
         return null;
     }
 
-    public function set($key, $value, $expireResolution = null, $expireTTL = null, $flag = null): mixed
+    public function set($key, $value, $expireResolution = null, $expireTTL = null, $flag = null): bool
     {
         $this->storage[$key] = $value;
-        return $this->storage[$key];
+        return true;
     }
 
     public function del(array|string $keys): int
@@ -183,6 +181,16 @@ class RedisClientMock extends Client
             $counter++;
         }
         return $counter;
+    }
+
+    public function hgetall($key): array
+    {
+        return (array)$this->get($key);
+    }
+
+    public function hmset($key, array $dictionary): bool
+    {
+        return $this->set($key, $dictionary);
     }
 
     public function __call($commandID, $arguments)

@@ -26,6 +26,22 @@ class CoefficientService
         $this->config = $config;
     }
 
+    public function collectUserReportCoefficients(Votes $votes): Coefficients
+    {
+        $coefficients = new Coefficients();
+
+        foreach (CoefficientHelper::TYPES as $type) {
+            try {
+                $coefficient = $this->calculateCoefficientByVotes($type, $votes);
+            } catch (CoefficientException $exception) {
+                continue;
+            }
+            $coefficients->addItem($coefficient);
+        }
+
+        return $coefficients;
+    }
+
     /**
      * @throws CoefficientException
      */

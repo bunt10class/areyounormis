@@ -14,14 +14,15 @@ $start = microtime(true);
 
 $request = ServerRequestFactory::fromGlobals();
 
-switch ($request->getUri()->getPath()) {
-    case '/':
-        $controller = $container->get(WebController::class);
-        $response = $controller->getUserReportById($request);
-        break;
-    default:
-        $response = new HtmlResponse('Invalid path', 404);
-}
+/** @var WebController $controller */
+$controller = $container->get(WebController::class);
+$response = match ($request->getUri()->getPath()) {
+    '/generate' => $controller->generateUserReport($request),
+    '/get' => $controller->getUserReport($request),
+    '/delete' => $controller->deleteUserReport($request),
+    '/generate-get' => $controller->generateGetUserReport($request),
+    default => new HtmlResponse('Invalid path', 404),
+};
 
 $processingTime = round(microtime(true) - $start, 2);
 

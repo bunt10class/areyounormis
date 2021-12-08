@@ -20,12 +20,12 @@ class UserReport
         User $user,
         Coefficients $coefficients,
         VoteSystem $voteSystem,
-        MovieVotes $userMovieRates,
+        MovieVotes $movieVotes,
     ) {
         $this->user = $user;
         $this->coefficients = $coefficients;
         $this->voteSystem = $voteSystem;
-        $this->movieVotes = $userMovieRates;
+        $this->movieVotes = $movieVotes;
     }
 
     public function getUser(): User

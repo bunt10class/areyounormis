@@ -6,6 +6,7 @@ namespace Tests\Unit\Areyounormis\ClientRequest;
 
 use Areyounormis\ClientRequest\RequestRedisRepository;
 use PHPUnit\Framework\TestCase;
+use Tests\Unit\Areyounormis\Mocks\ConfigMock;
 use Tests\Unit\Areyounormis\Mocks\RedisClientMock;
 
 class RequestRedisRepositoryTest extends TestCase
@@ -16,7 +17,7 @@ class RequestRedisRepositoryTest extends TestCase
     {
         parent::setUp();
 
-        $this->classUnderTest = new RequestRedisRepository(new RedisClientMock());
+        $this->classUnderTest = new RequestRedisRepository(new RedisClientMock(), new ConfigMock());
     }
 
     /**
@@ -31,10 +32,11 @@ class RequestRedisRepositoryTest extends TestCase
             'key1' => 'value1',
             'key2' => 'value2',
         ];
-
         $this->classUnderTest->saveHeaders($headers);
 
-        self::assertEquals($headers, $this->classUnderTest->getHeaders());
+        $result = $this->classUnderTest->getHeaders();
+
+        self::assertEquals($headers, $result);
     }
 
     /**
@@ -47,7 +49,9 @@ class RequestRedisRepositoryTest extends TestCase
     {
         $this->classUnderTest->saveHeaders([]);
 
-        self::assertEmpty($this->classUnderTest->getHeaders());
+        $result = $this->classUnderTest->getHeaders();
+
+        self::assertEmpty($result);
     }
 
     /**
@@ -60,7 +64,7 @@ class RequestRedisRepositoryTest extends TestCase
     {
         $result = $this->classUnderTest->getHeaders();
 
-        self::assertNull($result);
+        self::assertEmpty($result);
     }
 
     /**
@@ -74,6 +78,8 @@ class RequestRedisRepositoryTest extends TestCase
         $this->classUnderTest->saveHeaders(['key' => 'value']);
         $this->classUnderTest->deleteHeaders();
 
-        self::assertNull($this->classUnderTest->getHeaders());
+        $result = $this->classUnderTest->getHeaders();
+
+        self::assertEmpty($result);
     }
 }

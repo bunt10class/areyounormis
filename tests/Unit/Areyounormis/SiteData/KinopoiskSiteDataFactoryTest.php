@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tests\Unit\Areyounormis\SiteData;
 
 use Areyounormis\SiteData\KinopoiskSiteDataService;
+use Kinopoisk\KinopoiskHelper;
 use Kinopoisk\KinopoiskUserMovies;
 use PHPUnit\Framework\TestCase;
 use Tests\Unit\Areyounormis\Mocks\KinopoiskUserMovieServiceMock;
@@ -32,7 +33,7 @@ class KinopoiskSiteDataFactoryTest extends TestCase
         $userMovies = $this->factory->makeKinopoiskUserMovieWithOne([
             'ru_name' => $ruName = 'некоторое имя',
             'en_name' => $enName = 'some name',
-            'link' => $link = 'https://some_url',
+            'link' => $link = '/some_url',
             'kp_vote' => $kpVote = 2.5,
             'user_vote' => $userVote = 7,
         ]);
@@ -51,7 +52,7 @@ class KinopoiskSiteDataFactoryTest extends TestCase
         self::assertEquals($kpVote, $result->getMovieVotes()->getItems()[0]->getVote()->getSiteVote());
         self::assertEquals($ruName, $result->getMovieVotes()->getItems()[0]->getMovie()->getRuName());
         self::assertEquals($enName, $result->getMovieVotes()->getItems()[0]->getMovie()->getEnName());
-        self::assertEquals($link, $result->getMovieVotes()->getItems()[0]->getMovie()->getLink());
+        self::assertEquals('https://www.kinopoisk.ru' . $link, $result->getMovieVotes()->getItems()[0]->getMovie()->getLink());
     }
 
     /**

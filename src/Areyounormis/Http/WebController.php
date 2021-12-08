@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Areyounormis\Http;
 
-use Areyounormis\Report\UserReportFacade;
 use Areyounormis\Report\UserReportService;
 use Core\Template\TemplateRenderer;
 use Laminas\Diactoros\Response\HtmlResponse;
@@ -12,6 +11,8 @@ use Laminas\Diactoros\ServerRequest;
 
 class WebController
 {
+    private const DEFAULT_USER_ID = '4023229';
+
     protected UserReportService $userReportService;
     protected TemplateRenderer $templateRenderer;
 
@@ -23,15 +24,45 @@ class WebController
         $this->templateRenderer = $templateRenderer;
     }
 
-    public function getUserReportById(ServerRequest $request): HtmlResponse
+    public function generateUserReport(ServerRequest $request): HtmlResponse
     {
-        $userId = $request->getQueryParams()['user_id'] ?? '4023229';
+        $userId = $request->getQueryParams()['user_id'] ?? self::DEFAULT_USER_ID;
 
-        $userReport = $this->userReportService->collectUserReportByUserId($userId);
-        $userReportFacade = new UserReportFacade($userReport);
+        $this->userReportService->generateSaveUserReport($userId);
 
-        $view = $this->templateRenderer->render('report/user-report', $userReportFacade->getPrettyUserReport());
+        return new HtmlResponse($this->templateRenderer->render('report/message-generate'));
+    }
+
+    public function getUserReport(ServerRequest $request): HtmlResponse
+    {
+        $userId = $request->getQueryParams()['user_id'] ?? self::DEFAULT_USER_ID;
+
+        $report = $this->userReportService->getUserReport($userId);
+
+        if ($report) {
+            $view = $this->templateRenderer->render('report/user-report', $report);
+        } else {
+            $view = $this->templateRenderer->render('report/message-not-exist');
+        }
 
         return new HtmlResponse($view);
+    }
+
+    public function deleteUserReport(ServerRequest $request): HtmlResponse
+    {
+        $userId = $request->getQueryParams()['user_id'] ?? self::DEFAULT_USER_ID;
+
+        $this->userReportService->deleteUserReport($userId);
+
+        return new HtmlResponse($this->templateRenderer->render('report/message-delete'));
+    }
+
+    public function generateGetUserReport(ServerRequest $request): HtmlResponse
+    {
+        $userId = $request->getQueryParams()['user_id'] ?? self::DEFAULT_USER_ID;
+
+        $report = $this->userReportService->collectUserReportFacade($userId)->getPrettyUserReport();
+
+        return new HtmlResponse($this->templateRenderer->render('report/user-report', $report));
     }
 }

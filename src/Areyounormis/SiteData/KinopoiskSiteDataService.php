@@ -13,6 +13,7 @@ use Areyounormis\Vote\VoteFactory;
 use Areyounormis\Vote\Votes;
 use Areyounormis\Vote\VoteSystem;
 use Areyounormis\Vote\VoteSystemFactory;
+use Kinopoisk\KinopoiskHelper;
 use Kinopoisk\KinopoiskUserMovie;
 use Kinopoisk\KinopoiskUserMovieServiceInterface;
 
@@ -56,7 +57,7 @@ class KinopoiskSiteDataService implements SiteDataServiceInterface
         $movie = new Movie(
             $userMovie->getRuName(),
             $userMovie->getEnName(),
-            $userMovie->getLink(),
+            KinopoiskHelper::HOST . $userMovie->getLink(),
         );
 
         return new MovieVote($movie, $vote);
