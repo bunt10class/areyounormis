@@ -2,7 +2,6 @@
 
 use Areyounormis\Http\WebController;
 use Core\Container;
-use Laminas\Diactoros\Response\HtmlResponse;
 use Laminas\Diactoros\ServerRequestFactory;
 use Laminas\HttpHandlerRunner\Emitter\SapiEmitter;
 
@@ -10,18 +9,29 @@ chdir(dirname(__DIR__));
 require 'vendor/autoload.php';
 $container = new Container(require 'dist/definitions.php');
 
+//exec("php public/queue-worker.php > storage/logs/queue-worker.log 2>&1 &");
+
 $start = microtime(true);
 
 $request = ServerRequestFactory::fromGlobals();
 
 /** @var WebController $controller */
 $controller = $container->get(WebController::class);
-$response = match ($request->getUri()->getPath()) {
-    '/generate' => $controller->generateUserReport($request),
-    '/get' => $controller->getUserReport($request),
-    '/delete' => $controller->deleteUserReport($request),
-    '/generate-get' => $controller->generateGetUserReport($request),
-    default => new HtmlResponse('Invalid path', 404),
+
+$path = $request->getUri()->getPath();
+$response = match ($request->getMethod()) {
+    'GET' => match ($path) {
+        '/' => $controller->index(),
+        '/get' => $controller->getUserReport($request),
+
+        '/delete' => $controller->deleteUserReport($request),
+        '/collect-get' => $controller->collectUserReport($request),
+        default => $controller->getPageNotExist(),
+    },
+    'POST' => match ($path) {
+        '/collect' => $controller->collectUserReportToQueue($request),
+        default => $controller->getPageNotExist(),
+    },
 };
 
 $processingTime = round(microtime(true) - $start, 2);

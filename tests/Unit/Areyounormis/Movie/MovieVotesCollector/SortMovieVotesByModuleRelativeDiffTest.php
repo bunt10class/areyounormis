@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Tests\Unit\Areyounormis\Report\MovieVotesCollector;
+namespace Tests\Unit\Areyounormis\Movie\MovieVotesCollector;
 
-use Areyounormis\Report\MovieVotesCollector;
+use Areyounormis\Movie\MovieVotesCollector;
 use PHPUnit\Framework\TestCase;
 use Tests\Unit\Areyounormis\Factories\MovieVoteFactory;
 
-class SortMovieVotesByNameTest extends TestCase
+class SortMovieVotesByModuleRelativeDiffTest extends TestCase
 {
     /**
      * @group unit
@@ -20,7 +20,7 @@ class SortMovieVotesByNameTest extends TestCase
     {
         $movieVotes = MovieVoteFactory::getEmptyCollection();
 
-        $result = MovieVotesCollector::sortMovieVotesByMovieName($movieVotes);
+        $result = MovieVotesCollector::sortMovieVotesByModuleRelativeDiff($movieVotes);
 
         self::assertEmpty($result->getItems());
     }
@@ -35,7 +35,7 @@ class SortMovieVotesByNameTest extends TestCase
     {
         $movieVotes = MovieVoteFactory::getCollectionWithSomeItems($number = 3);
 
-        $result = MovieVotesCollector::sortMovieVotesByMovieName($movieVotes);
+        $result = MovieVotesCollector::sortMovieVotesByModuleRelativeDiff($movieVotes);
 
         self::assertCount($number, $result->getItems());
     }
@@ -50,23 +50,31 @@ class SortMovieVotesByNameTest extends TestCase
     {
         $movieVotes = MovieVoteFactory::getEmptyCollection();
         $movieVotes->addItem(MovieVoteFactory::getItem([
-            'ru_name' => $ruName1 = 'bbb',
+            'ru_name' => $ruName1 = 'ru_name_1',
+            'user_vote' => 7,
+            'site_vote' => 2,
         ]));
         $movieVotes->addItem(MovieVoteFactory::getItem([
-            'ru_name' => $ruName2 = 'zzz',
+            'ru_name' => $ruName2 = 'ru_name_2',
+            'user_vote' => 10,
+            'site_vote' => 0,
         ]));
         $movieVotes->addItem(MovieVoteFactory::getItem([
-            'ru_name' => $ruName3 = 'yyy',
+            'ru_name' => $ruName3 = 'ru_name_3',
+            'user_vote' => 5,
+            'site_vote' => 5,
         ]));
         $movieVotes->addItem(MovieVoteFactory::getItem([
-            'ru_name' => $ruName4 = 'aaa',
+            'ru_name' => $ruName4 = 'ru_name_4',
+            'user_vote' => 4,
+            'site_vote' => 6,
         ]));
 
-        $result = MovieVotesCollector::sortMovieVotesByMovieName($movieVotes, true);
+        $result = MovieVotesCollector::sortMovieVotesByModuleRelativeDiff($movieVotes, true);
 
-        self::assertEquals($ruName4, $result->getItems()[0]->getMovie()->getRuName());
-        self::assertEquals($ruName1, $result->getItems()[1]->getMovie()->getRuName());
-        self::assertEquals($ruName3, $result->getItems()[2]->getMovie()->getRuName());
+        self::assertEquals($ruName3, $result->getItems()[0]->getMovie()->getRuName());
+        self::assertEquals($ruName4, $result->getItems()[1]->getMovie()->getRuName());
+        self::assertEquals($ruName1, $result->getItems()[2]->getMovie()->getRuName());
         self::assertEquals($ruName2, $result->getItems()[3]->getMovie()->getRuName());
     }
 
@@ -80,23 +88,31 @@ class SortMovieVotesByNameTest extends TestCase
     {
         $movieVotes = MovieVoteFactory::getEmptyCollection();
         $movieVotes->addItem(MovieVoteFactory::getItem([
-            'ru_name' => $ruName1 = 'bbb',
+            'ru_name' => $ruName1 = 'ru_name_1',
+            'user_vote' => 7,
+            'site_vote' => 2,
         ]));
         $movieVotes->addItem(MovieVoteFactory::getItem([
-            'ru_name' => $ruName2 = 'zzz',
+            'ru_name' => $ruName2 = 'ru_name_2',
+            'user_vote' => 10,
+            'site_vote' => 0,
         ]));
         $movieVotes->addItem(MovieVoteFactory::getItem([
-            'ru_name' => $ruName3 = 'yyy',
+            'ru_name' => $ruName3 = 'ru_name_3',
+            'user_vote' => 5,
+            'site_vote' => 5,
         ]));
         $movieVotes->addItem(MovieVoteFactory::getItem([
-            'ru_name' => $ruName4 = 'aaa',
+            'ru_name' => $ruName4 = 'ru_name_4',
+            'user_vote' => 4,
+            'site_vote' => 6,
         ]));
 
-        $result = MovieVotesCollector::sortMovieVotesByMovieName($movieVotes, false);
+        $result = MovieVotesCollector::sortMovieVotesByModuleRelativeDiff($movieVotes, false);
 
         self::assertEquals($ruName2, $result->getItems()[0]->getMovie()->getRuName());
-        self::assertEquals($ruName3, $result->getItems()[1]->getMovie()->getRuName());
-        self::assertEquals($ruName1, $result->getItems()[2]->getMovie()->getRuName());
-        self::assertEquals($ruName4, $result->getItems()[3]->getMovie()->getRuName());
+        self::assertEquals($ruName1, $result->getItems()[1]->getMovie()->getRuName());
+        self::assertEquals($ruName4, $result->getItems()[2]->getMovie()->getRuName());
+        self::assertEquals($ruName3, $result->getItems()[3]->getMovie()->getRuName());
     }
 }

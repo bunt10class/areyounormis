@@ -26,46 +26,43 @@ class CoefficientService
         $this->config = $config;
     }
 
-    public function collectUserReportCoefficients(Votes $votes): Coefficients
+    public function collectUserReportCoefficientValues(Votes $votes): CoefficientValues
     {
-        $coefficients = new Coefficients();
+        $coefficientValues = new CoefficientValues();
 
         foreach (CoefficientHelper::TYPES as $type) {
             try {
-                $coefficient = $this->calculateCoefficientByVotes($type, $votes);
+                $coefficientValue = $this->calculateCoefficientValueByVotes($type, $votes);
             } catch (CoefficientException $exception) {
                 continue;
             }
-            $coefficients->addItem($coefficient);
+            $coefficientValues->addItem($coefficientValue);
         }
 
-        return $coefficients;
+        return $coefficientValues;
     }
 
     /**
      * @throws CoefficientException
      */
-    public function calculateCoefficientByVotes(string $type, Votes $votes): Coefficient
+    public function calculateCoefficientValueByVotes(string $type, Votes $votes): CoefficientValue
     {
-        $value = $this->coefCalc->calculateCoefficient($type, $votes);
-        return $this->getCoefficient($type, $value);
+        $value = $this->coefCalc->calculateValue($type, $votes);
+        return $this->getCoefficientValue($type, $value);
     }
 
     /**
      * @throws CoefficientException
      */
-    public function getCoefficient(string $type, float $value): Coefficient
+    public function getCoefficientValue(string $type, float $value): CoefficientValue
     {
         $coefficient = $this->getConfigDataByType($type);
         $level = $this->defineLevel($coefficient['levels'], $value);
 
-        return new Coefficient(
-            $type,
-            $coefficient['name'],
-            $coefficient['description'],
+        return new CoefficientValue(
+            new Coefficient($type, $coefficient['name'], $coefficient['description']),
             round($value, VoteSystem::PRECISION),
-            $level['color'],
-            $level['description'],
+            new CoefficientLevel($level['color'], $level['description']),
         );
     }
 

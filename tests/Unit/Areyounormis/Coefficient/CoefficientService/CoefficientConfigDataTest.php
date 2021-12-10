@@ -33,7 +33,7 @@ class CoefficientConfigDataTest extends TestCase
         ];
         $classUnderTest = new CoefficientService(new CoefficientCalculatorMock(), new ConfigMock($configData));
 
-        $classUnderTest->getCoefficient('norm', 0.5);
+        $classUnderTest->getCoefficientValue('norm', 0.5);
 
         self::assertTrue(true);
     }
@@ -60,7 +60,7 @@ class CoefficientConfigDataTest extends TestCase
         ];
         $classUnderTest = new CoefficientService(new CoefficientCalculatorMock(), new ConfigMock($configData));
 
-        $classUnderTest->getCoefficient('norm', 0.5);
+        $classUnderTest->getCoefficientValue('norm', 0.5);
     }
 
     /**
@@ -86,7 +86,7 @@ class CoefficientConfigDataTest extends TestCase
         ];
         $classUnderTest = new CoefficientService(new CoefficientCalculatorMock(), new ConfigMock($configData));
 
-        $classUnderTest->getCoefficient('norm', 0.5);
+        $classUnderTest->getCoefficientValue('norm', 0.5);
     }
 
     /**
@@ -111,7 +111,7 @@ class CoefficientConfigDataTest extends TestCase
         ];
         $classUnderTest = new CoefficientService(new CoefficientCalculatorMock(), new ConfigMock($configData));
 
-        $classUnderTest->getCoefficient('norm', 0.5);
+        $classUnderTest->getCoefficientValue('norm', 0.5);
     }
 
     /**
@@ -137,7 +137,7 @@ class CoefficientConfigDataTest extends TestCase
         ];
         $classUnderTest = new CoefficientService(new CoefficientCalculatorMock(), new ConfigMock($configData));
 
-        $classUnderTest->getCoefficient('norm', 0.5);
+        $classUnderTest->getCoefficientValue('norm', 0.5);
     }
 
     /**
@@ -156,7 +156,7 @@ class CoefficientConfigDataTest extends TestCase
         ];
         $classUnderTest = new CoefficientService(new CoefficientCalculatorMock(), new ConfigMock($configData));
 
-        $classUnderTest->getCoefficient('norm', 0.5);
+        $classUnderTest->getCoefficientValue('norm', 0.5);
     }
 
     /**
@@ -176,7 +176,7 @@ class CoefficientConfigDataTest extends TestCase
         ];
         $classUnderTest = new CoefficientService(new CoefficientCalculatorMock(), new ConfigMock($configData));
 
-        $classUnderTest->getCoefficient('norm', 0.5);
+        $classUnderTest->getCoefficientValue('norm', 0.5);
     }
 
     /**
@@ -196,7 +196,7 @@ class CoefficientConfigDataTest extends TestCase
         ];
         $classUnderTest = new CoefficientService(new CoefficientCalculatorMock(), new ConfigMock($configData));
 
-        $classUnderTest->getCoefficient('norm', 0.5);
+        $classUnderTest->getCoefficientValue('norm', 0.5);
     }
 
     /**
@@ -221,7 +221,7 @@ class CoefficientConfigDataTest extends TestCase
         ];
         $classUnderTest = new CoefficientService(new CoefficientCalculatorMock(), new ConfigMock($configData));
 
-        $classUnderTest->getCoefficient('norm', 0.5);
+        $classUnderTest->getCoefficientValue('norm', 0.5);
     }
 
     /**
@@ -247,7 +247,7 @@ class CoefficientConfigDataTest extends TestCase
         ];
         $classUnderTest = new CoefficientService(new CoefficientCalculatorMock(), new ConfigMock($configData));
 
-        $classUnderTest->getCoefficient('norm', 0.5);
+        $classUnderTest->getCoefficientValue('norm', 0.5);
     }
 
     /**
@@ -273,7 +273,7 @@ class CoefficientConfigDataTest extends TestCase
         ];
         $classUnderTest = new CoefficientService(new CoefficientCalculatorMock(), new ConfigMock($configData));
 
-        $classUnderTest->getCoefficient('norm', 0.5);
+        $classUnderTest->getCoefficientValue('norm', 0.5);
     }
 
     /**
@@ -299,7 +299,7 @@ class CoefficientConfigDataTest extends TestCase
         ];
         $classUnderTest = new CoefficientService(new CoefficientCalculatorMock(), new ConfigMock($configData));
 
-        $classUnderTest->getCoefficient('norm', 0.5);
+        $classUnderTest->getCoefficientValue('norm', 0.5);
     }
 
     /**
@@ -324,7 +324,7 @@ class CoefficientConfigDataTest extends TestCase
         ];
         $classUnderTest = new CoefficientService(new CoefficientCalculatorMock(), new ConfigMock($configData));
 
-        $classUnderTest->getCoefficient('norm', 0.5);
+        $classUnderTest->getCoefficientValue('norm', 0.5);
     }
 
     /**
@@ -351,7 +351,7 @@ class CoefficientConfigDataTest extends TestCase
         ];
         $classUnderTest = new CoefficientService(new CoefficientCalculatorMock(), new ConfigMock($configData));
 
-        $classUnderTest->getCoefficient('norm', 0.5);
+        $classUnderTest->getCoefficientValue('norm', 0.5);
     }
 
     /**
@@ -376,7 +376,7 @@ class CoefficientConfigDataTest extends TestCase
         ];
         $classUnderTest = new CoefficientService(new CoefficientCalculatorMock(), new ConfigMock($configData));
 
-        $classUnderTest->getCoefficient('norm', 0.5);
+        $classUnderTest->getCoefficientValue('norm', 0.5);
     }
 
     /**
@@ -402,6 +402,6 @@ class CoefficientConfigDataTest extends TestCase
         ];
         $classUnderTest = new CoefficientService(new CoefficientCalculatorMock(), new ConfigMock($configData));
 
-        $classUnderTest->getCoefficient('norm', 0.5);
+        $classUnderTest->getCoefficientValue('norm', 0.5);
     }
 }

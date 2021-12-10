@@ -16,7 +16,7 @@ class CoefficientCalculatorMock extends CoefficientCalculator
         $this->value = $value;
     }
 
-    public function calculateCoefficient(string $type, Votes $votes): float
+    public function calculateValue(string $type, Votes $votes): float
     {
         return $this->value;
     }

@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Areyounormis\SiteData;
+namespace Areyounormis\ResourceData;
 
-interface SiteDataServiceInterface
+interface ResourceDataRepositoryInterface
 {
     public function getByUserId(string $userId): SiteData;
 }

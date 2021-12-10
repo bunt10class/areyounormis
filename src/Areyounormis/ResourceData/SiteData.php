@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Areyounormis\SiteData;
+namespace Areyounormis\ResourceData;
 
 use Areyounormis\Movie\MovieVotes;
 use Areyounormis\Vote\Votes;

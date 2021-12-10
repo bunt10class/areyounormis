@@ -4,55 +4,54 @@ declare(strict_types=1);
 
 namespace Areyounormis\Report;
 
-use Areyounormis\Coefficient\Coefficients;
 use Areyounormis\Coefficient\CoefficientService;
-use Areyounormis\Movie\Movie;
-use Areyounormis\Movie\MovieVote;
-use Areyounormis\Movie\MovieVotes;
-use Areyounormis\SiteData\SiteDataServiceInterface;
+use Areyounormis\ResourceData\ResourceDataRepositoryInterface;
 use Areyounormis\User\User;
-use Areyounormis\Vote\Vote;
-use Areyounormis\Vote\VoteSystem;
-use Areyounormis\Vote\VoteSystemFactory;
 
 class UserReportService
 {
-    protected SiteDataServiceInterface $siteDataService;
+    protected ResourceDataRepositoryInterface $siteDataService;
     protected CoefficientService $coefService;
     protected ReportRedisRepository $reportRedisRepository;
+    protected ReportJob $reportJob;
 
     public function __construct(
-        SiteDataServiceInterface $siteDataService,
+        ResourceDataRepositoryInterface $siteDataService,
         CoefficientService $coefService,
         ReportRedisRepository $reportRedisRepository,
+        ReportJob $userReportJob,
     ) {
         $this->siteDataService = $siteDataService;
         $this->coefService = $coefService;
         $this->reportRedisRepository = $reportRedisRepository;
+        $this->reportJob = $userReportJob;
     }
 
-    public function collectUserReportFacade(string $userId): UserReportFacade
+    public function collectToQueue(string $userId): void
     {
-        $userReport = $this->collectUserReport($userId);
-        return new UserReportFacade($userReport);
+        $this->delete($userId);
+        $this->reportJob->collectUserReport($userId);
     }
 
-    public function generateSaveUserReport(string $userId): void
+    public function save(string $userId, array $data): void
     {
-        $userReport = $this->collectUserReport($userId);
-        $userReportFacade = new UserReportFacade($userReport);
-
-        $this->reportRedisRepository->saveUserReport($userId, $userReportFacade->getPrettyUserReport());
+        $this->reportRedisRepository->saveUserReportData($userId, $data);
     }
 
-    public function deleteUserReport(string $userId): void
+    public function get(string $userId): array
+    {
+        return $this->reportRedisRepository->getUserReport($userId);
+    }
+
+    public function delete(string $userId): void
     {
         $this->reportRedisRepository->deleteUserReport($userId);
     }
 
-    public function getUserReport(string $userId): array
+    public function collectFacade(string $userId): UserReportFacade
     {
-        return $this->reportRedisRepository->getUserReport($userId);
+        $userReport = $this->collectUserReport($userId);
+        return new UserReportFacade($userReport);
     }
 
     public function collectUserReport(string $userId): UserReport
@@ -63,7 +62,7 @@ class UserReportService
 
         return new UserReport(
             $user,
-            $this->coefService->collectUserReportCoefficients($siteData->getVotes()),
+            $this->coefService->collectUserReportCoefficientValues($siteData->getVotes()),
             $siteData->getVoteSystem(),
             $siteData->getMovieVotes(),
         );

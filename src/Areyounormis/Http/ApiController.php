@@ -21,8 +21,8 @@ class ApiController
     public function getUserReportById(ServerRequest $request): JsonResponse
     {
         $userId = $request->getQueryParams()['user_id'];
-        $userReport = $this->userReportService->collectUserReport($userId);
+        $report = $this->userReportService->collectFacade($userId);
 
-        return new UserReportResponse($userReport);
+        return new UserReportResponse($report);
     }
 }

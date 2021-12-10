@@ -13,7 +13,7 @@ class CoefficientCalculator
     /**
      * @throws InvalidCoefficientTypeException
      */
-    public function calculateCoefficient(string $type, Votes $votes): float
+    public function calculateValue(string $type, Votes $votes): float
     {
         switch ($type) {
             case CoefficientHelper::NORM_TYPE:

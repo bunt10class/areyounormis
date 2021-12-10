@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Areyounormis\SiteData;
+namespace Areyounormis\ResourceData;
 
 use Areyounormis\Movie\Movie;
 use Areyounormis\Movie\MovieVote;
@@ -17,7 +17,7 @@ use Kinopoisk\KinopoiskHelper;
 use Kinopoisk\KinopoiskUserMovie;
 use Kinopoisk\KinopoiskUserMovieServiceInterface;
 
-class KinopoiskSiteDataService implements SiteDataServiceInterface
+class KinopoiskResourceDataRepository implements ResourceDataRepositoryInterface
 {
     protected KinopoiskUserMovieServiceInterface $kinopoiskUserMovieService;
 
@@ -28,6 +28,7 @@ class KinopoiskSiteDataService implements SiteDataServiceInterface
 
     public function getByUserId(string $userId): SiteData
     {
+        // todo $userId not numeric exception - invalid userid
         $userMovies = $this->kinopoiskUserMovieService->getUserMoviesById((int)$userId);
 
         $voteSystem = VoteSystemFactory::makeForKinopoisk();

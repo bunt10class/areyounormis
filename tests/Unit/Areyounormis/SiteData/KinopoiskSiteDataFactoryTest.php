@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Areyounormis\SiteData;
 
-use Areyounormis\SiteData\KinopoiskSiteDataService;
+use Areyounormis\ResourceData\KinopoiskResourceDataRepository;
 use Kinopoisk\KinopoiskHelper;
 use Kinopoisk\KinopoiskUserMovies;
 use PHPUnit\Framework\TestCase;
@@ -175,8 +175,8 @@ class KinopoiskSiteDataFactoryTest extends TestCase
         self::assertEmpty($result->getMovieVotes()->getItems());
     }
 
-    protected function makeClassUnderTest(KinopoiskUserMovies $userMovies): KinopoiskSiteDataService
+    protected function makeClassUnderTest(KinopoiskUserMovies $userMovies): KinopoiskResourceDataRepository
     {
-        return new KinopoiskSiteDataService(new KinopoiskUserMovieServiceMock($userMovies));
+        return new KinopoiskResourceDataRepository(new KinopoiskUserMovieServiceMock($userMovies));
     }
 }

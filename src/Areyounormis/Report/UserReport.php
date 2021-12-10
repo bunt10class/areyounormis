@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Areyounormis\Report;
 
-use Areyounormis\Coefficient\Coefficients;
+use Areyounormis\Coefficient\CoefficientValues;
 use Areyounormis\User\User;
 use Areyounormis\Movie\MovieVotes;
 use Areyounormis\Vote\VoteSystem;
@@ -12,18 +12,18 @@ use Areyounormis\Vote\VoteSystem;
 class UserReport
 {
     protected User $user;
-    protected Coefficients $coefficients;
+    protected CoefficientValues $coefficientValues;
     protected VoteSystem $voteSystem;
     protected MovieVotes $movieVotes;
 
     public function __construct(
         User $user,
-        Coefficients $coefficients,
+        CoefficientValues $coefficientValues,
         VoteSystem $voteSystem,
         MovieVotes $movieVotes,
     ) {
         $this->user = $user;
-        $this->coefficients = $coefficients;
+        $this->coefficientValues = $coefficientValues;
         $this->voteSystem = $voteSystem;
         $this->movieVotes = $movieVotes;
     }
@@ -33,9 +33,9 @@ class UserReport
         return $this->user;
     }
 
-    public function getCoefficients(): Coefficients
+    public function getCoefficientValues(): CoefficientValues
     {
-        return $this->coefficients;
+        return $this->coefficientValues;
     }
 
     public function getVoteSystem(): VoteSystem

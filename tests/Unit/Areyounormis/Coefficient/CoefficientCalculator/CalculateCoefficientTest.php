@@ -26,7 +26,7 @@ class CalculateCoefficientTest extends CoefficientCalculatorMain
         $classUnderTestMock->expects($this->never())->method('calculateNormCoefficient');
         $classUnderTestMock->expects($this->never())->method('calculateOverUnderRateCoefficient');
 
-        $classUnderTestMock->calculateCoefficient('not_existent_type', new Votes());
+        $classUnderTestMock->calculateValue('not_existent_type', new Votes());
     }
 
     /**
@@ -41,7 +41,7 @@ class CalculateCoefficientTest extends CoefficientCalculatorMain
 
         $classUnderTestMock->expects($this->once())->method('calculateNormCoefficient');
 
-        $classUnderTestMock->calculateCoefficient('norm', new Votes());
+        $classUnderTestMock->calculateValue('norm', new Votes());
     }
 
     /**
@@ -56,7 +56,7 @@ class CalculateCoefficientTest extends CoefficientCalculatorMain
 
         $classUnderTestMock->expects($this->once())->method('calculateOverUnderRateCoefficient');
 
-        $classUnderTestMock->calculateCoefficient('over_under_rate', new Votes());
+        $classUnderTestMock->calculateValue('over_under_rate', new Votes());
     }
 
     protected function getClassUnderTestMock(): MockObject

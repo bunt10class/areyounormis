@@ -5,14 +5,13 @@ declare(strict_types=1);
 namespace Areyounormis\Http;
 
 use Areyounormis\Report\UserReportService;
+use Core\Exceptions\RequestException;
 use Core\Template\TemplateRenderer;
 use Laminas\Diactoros\Response\HtmlResponse;
 use Laminas\Diactoros\ServerRequest;
 
 class WebController
 {
-    private const DEFAULT_USER_ID = '4023229';
-
     protected UserReportService $userReportService;
     protected TemplateRenderer $templateRenderer;
 
@@ -24,20 +23,38 @@ class WebController
         $this->templateRenderer = $templateRenderer;
     }
 
-    public function generateUserReport(ServerRequest $request): HtmlResponse
+    public function index(): HtmlResponse
     {
-        $userId = $request->getQueryParams()['user_id'] ?? self::DEFAULT_USER_ID;
+        return new HtmlResponse($this->templateRenderer->render('report/user-report-create'));
+    }
 
-        $this->userReportService->generateSaveUserReport($userId);
+    public function collectUserReportToQueue(ServerRequest $request): HtmlResponse
+    {
+        try {
+            $userReportRequest = new UserReportRequest($request);
+        } catch (RequestException $exception) {
+            return new HtmlResponse($this->templateRenderer->render('report/user-report-create', [
+                'error_message' => $exception->getMessage(),
+            ]));
+        }
 
-        return new HtmlResponse($this->templateRenderer->render('report/message-generate'));
+        $userId = $userReportRequest->getUserId();
+        $this->userReportService->collectToQueue($userId);
+
+        return new HtmlResponse($this->templateRenderer->render('report/message-collect', ['user_id' => $userId]));
     }
 
     public function getUserReport(ServerRequest $request): HtmlResponse
     {
-        $userId = $request->getQueryParams()['user_id'] ?? self::DEFAULT_USER_ID;
+        try {
+            $userReportRequest = new UserReportRequest($request);
+        } catch (RequestException $exception) {
+            return new HtmlResponse($this->templateRenderer->render('common/invalid-request', [
+                'error_message' => $exception->getMessage(),
+            ]));
+        }
 
-        $report = $this->userReportService->getUserReport($userId);
+        $report = $this->userReportService->get($userReportRequest->getUserId());
 
         if ($report) {
             $view = $this->templateRenderer->render('report/user-report', $report);
@@ -50,19 +67,36 @@ class WebController
 
     public function deleteUserReport(ServerRequest $request): HtmlResponse
     {
-        $userId = $request->getQueryParams()['user_id'] ?? self::DEFAULT_USER_ID;
+        try {
+            $userReportRequest = new UserReportRequest($request);
+        } catch (RequestException $exception) {
+            return new HtmlResponse($this->templateRenderer->render('common/invalid-request', [
+                'error_message' => $exception->getMessage(),
+            ]));
+        }
 
-        $this->userReportService->deleteUserReport($userId);
+        $this->userReportService->delete($userReportRequest->getUserId());
 
         return new HtmlResponse($this->templateRenderer->render('report/message-delete'));
     }
 
-    public function generateGetUserReport(ServerRequest $request): HtmlResponse
+    public function collectUserReport(ServerRequest $request): HtmlResponse
     {
-        $userId = $request->getQueryParams()['user_id'] ?? self::DEFAULT_USER_ID;
+        try {
+            $userReportRequest = new UserReportRequest($request);
+        } catch (RequestException $exception) {
+            return new HtmlResponse($this->templateRenderer->render('common/invalid-request', [
+                'error_message' => $exception->getMessage(),
+            ]));
+        }
 
-        $report = $this->userReportService->collectUserReportFacade($userId)->getPrettyUserReport();
+        $report = $this->userReportService->collectFacade($userReportRequest->getUserId())->getPrettyWithTops();
 
         return new HtmlResponse($this->templateRenderer->render('report/user-report', $report));
+    }
+
+    public function getPageNotExist(): HtmlResponse
+    {
+        return new HtmlResponse($this->templateRenderer->render('common/page-not-exist'));
     }
 }

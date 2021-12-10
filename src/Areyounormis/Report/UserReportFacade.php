@@ -7,6 +7,7 @@ namespace Areyounormis\Report;
 use Areyounormis\Movie\MovieHelper;
 use Areyounormis\Movie\MovieVote;
 use Areyounormis\Movie\MovieVotes;
+use Areyounormis\Movie\MovieVotesCollector;
 
 class UserReportFacade
 {
@@ -14,42 +15,35 @@ class UserReportFacade
     protected const MIN_INTEREST_MODULE_RELATIVE_DIFF = 0.3;
 
     protected UserReport $userReport;
-    protected int $overRateNumber;
-    protected int $underRateNumber;
 
-    public function __construct(
-        UserReport $userReport,
-        int $overRateNumber = 10,
-        int $underRateNumber = 10,
-    ) {
+    public function __construct(UserReport $userReport)
+    {
         $this->userReport = $userReport;
-        $this->overRateNumber = $overRateNumber;
-        $this->underRateNumber = $underRateNumber;
     }
 
-    public function getPrettyUserReport(): array
+    public function getPrettyWithTops(int $overRateNumber = 10, int $underRateNumber = 10): array
     {
         return [
             'user' => $this->userReport->getUser()->toArray(),
             'votes_system' => $this->userReport->getVoteSystem()->toArray(),
-            'coefficients' => $this->getPrettyCoefficients(),
+            'coefficient_values' => $this->getPrettyCoefficientValues(),
             'movie_number' => $this->userReport->getMovieVotes()->count(),
-            'movie_votes' => $this->getPrettyMovieVotesWithRates(),
+            'movie_votes' => $this->getPrettyMovieVotesWithRates($overRateNumber, $underRateNumber),
         ];
     }
 
-    protected function getPrettyCoefficients(): array
+    protected function getPrettyCoefficientValues(): array
     {
         $result = [];
 
-        foreach ($this->userReport->getCoefficients()->getItems() as $coefficient) {
-            $result[] = $coefficient->toArray();
+        foreach ($this->userReport->getCoefficientValues()->getItems() as $coefficientValue) {
+            $result[] = $coefficientValue->toArray();
         }
 
         return $result;
     }
 
-    protected function getPrettyMovieVotesWithRates(): array
+    protected function getPrettyMovieVotesWithRates(int $overRateNumber, int $underRateNumber): array
     {
         $normRates = new MovieVotes();
         $overRates = new MovieVotes();
@@ -67,8 +61,8 @@ class UserReportFacade
         }
 
         $normRates = MovieVotesCollector::sortMovieVotesByMovieName($normRates);
-        $overRates = MovieVotesCollector::getTheFirstNumberMaxDiffMovieVotes($overRates, $this->overRateNumber);
-        $underRates = MovieVotesCollector::getTheFirstNumberMaxDiffMovieVotes($underRates, $this->underRateNumber);
+        $overRates = MovieVotesCollector::getTheFirstNumberMaxDiffMovieVotes($overRates, $overRateNumber);
+        $underRates = MovieVotesCollector::getTheFirstNumberMaxDiffMovieVotes($underRates, $underRateNumber);
 
         return [
             'norm_rates' => $this->getPrettyMovieVotes($normRates),

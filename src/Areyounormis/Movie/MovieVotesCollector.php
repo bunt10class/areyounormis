@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Areyounormis\Report;
+namespace Areyounormis\Movie;
 
 use Areyounormis\Movie\MovieHelper;
 use Areyounormis\Movie\MovieVote;

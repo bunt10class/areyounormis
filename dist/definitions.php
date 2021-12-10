@@ -23,8 +23,8 @@ return [
     \Kinopoisk\WebService\Client\RequestServiceInterface::class => function (Container $container) {
         return $container->get(\Areyounormis\ClientRequest\RequestService::class);
     },
-    \Areyounormis\SiteData\SiteDataServiceInterface::class => function (Container $container) {
-        return $container->get(\Areyounormis\SiteData\KinopoiskSiteDataService::class);
+    \Areyounormis\ResourceData\ResourceDataRepositoryInterface::class => function (Container $container) {
+        return $container->get(\Areyounormis\ResourceData\KinopoiskResourceDataRepository::class);
     },
 
     /**

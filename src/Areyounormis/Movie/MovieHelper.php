@@ -11,6 +11,7 @@ class MovieHelper
     public static function getFullName(Movie $movie): string
     {
         $enName = $movie->getEnName();
+
         if ($ruName = $movie->getRuName()) {
             $fullName = $ruName;
 
@@ -18,11 +19,7 @@ class MovieHelper
                 $fullName .= ' (' . $enName . ')';
             }
         } else {
-            if ($enName) {
-                $fullName = $enName;
-            } else {
-                $fullName = self::DEFAULT_FULL_NAME;
-            }
+            $fullName = $enName ?: self::DEFAULT_FULL_NAME;
         }
 
         return $fullName;

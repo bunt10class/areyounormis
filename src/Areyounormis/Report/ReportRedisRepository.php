@@ -22,7 +22,7 @@ class ReportRedisRepository
         $this->config = $config;
     }
 
-    public function saveUserReport(string $userId, array $report): void
+    public function saveUserReportData(string $userId, array $report): void
     {
         $key = $this->collectUserReportKey($userId);
         $this->client->set($key, serialize($report));

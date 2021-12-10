@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Tests\Unit\Areyounormis\Report\MovieVotesCollector;
+namespace Tests\Unit\Areyounormis\Movie\MovieVotesCollector;
 
-use Areyounormis\Report\MovieVotesCollector;
+use Areyounormis\Movie\MovieVotesCollector;
 use PHPUnit\Framework\TestCase;
 use Tests\Unit\Areyounormis\Factories\MovieVoteFactory;
 
