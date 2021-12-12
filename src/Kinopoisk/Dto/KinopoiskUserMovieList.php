@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-namespace Kinopoisk;
+namespace Kinopoisk\Dto;
 
-class KinopoiskUserMovies
+class KinopoiskUserMovieList
 {
     /** @var KinopoiskUserMovie[] */
-    protected array $userMovies = [];
+    protected array $userMovieList = [];
 
     public function addItem(KinopoiskUserMovie $userMovie): void
     {
-        $this->userMovies[] = $userMovie;
+        $this->userMovieList[] = $userMovie;
     }
 
     public function addItems(array $userMovies): void
@@ -27,11 +27,11 @@ class KinopoiskUserMovies
 
     public function getItems(): array
     {
-        return $this->userMovies;
+        return $this->userMovieList;
     }
 
     public function isEmpty(): bool
     {
-        return empty($this->userMovies);
+        return empty($this->userMovieList);
     }
 }

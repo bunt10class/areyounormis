@@ -6,7 +6,7 @@ namespace Areyounormis\Domain\Vote\Factories;
 
 use Areyounormis\Domain\Vote\VoteSystem;
 use Areyounormis\Domain\Vote\Exceptions\VoteSystemException;
-use Kinopoisk\VoteHelper;
+use Kinopoisk\Helpers\VoteHelper;
 
 class VoteSystemFactory
 {

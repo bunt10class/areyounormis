@@ -4,22 +4,11 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Kinopoisk\Factories;
 
-use Faker\Factory;
-use Faker\Generator;
-use Kinopoisk\KinopoiskUserMovie;
-use Kinopoisk\KinopoiskUserMovies;
+use Kinopoisk\Dto\KinopoiskUserMovie;
+use Kinopoisk\Dto\KinopoiskUserMovieList;
 
 class KinopoiskUserMovieFactory
 {
-    protected Generator $enFaker;
-    protected Generator $ruFaker;
-
-    public function __construct()
-    {
-        $this->enFaker = Factory::create();
-        $this->ruFaker = Factory::create('ru_RU');
-    }
-
     public function make(array $data = []): KinopoiskUserMovie
     {
         return new KinopoiskUserMovie(
@@ -34,7 +23,7 @@ class KinopoiskUserMovieFactory
         );
     }
 
-    public function makeListWithOne(array $data = []): KinopoiskUserMovies
+    public function makeListWithOne(array $data = []): KinopoiskUserMovieList
     {
         $userMovie = $this->make($data);
 
@@ -43,9 +32,9 @@ class KinopoiskUserMovieFactory
         return $result;
     }
 
-    public function makeListWithSome(int $number): KinopoiskUserMovies
+    public function makeListWithSome(int $number): KinopoiskUserMovieList
     {
-        $result = new KinopoiskUserMovies();
+        $result = new KinopoiskUserMovieList();
 
         for ($i = 0; $i < $number; $i++) {
             $result->addItem($this->make());
@@ -54,7 +43,7 @@ class KinopoiskUserMovieFactory
         return $result;
     }
 
-    public function makeEmptyList(): KinopoiskUserMovies
+    public function makeEmptyList(): KinopoiskUserMovieList
     {
         return $this->makeListWithSome(0);
     }

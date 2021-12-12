@@ -4,21 +4,22 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Kinopoisk\WebService\UserMoviesPageParser;
 
-use Kinopoisk\WebService\UserMoviesPageParser\UserMoviesParser;
+use Kinopoisk\WebService\UserMoviesPageParser\UserMoviePageParser;
 use Tests\Unit\Kinopoisk\Mocks\CaptchaDetectorMock;
 use Tests\Unit\Kinopoisk\Mocks\MovieListParserMock;
 use Tests\Unit\Kinopoisk\Mocks\MovieListSearcherMock;
 
-class UserMoviesParserTest extends ParserMain
+class UserMoviePageParserTest extends ParserMain
 {
     /**
      * @group unit
      * @group kinopoisk
-     * @group user_movies_parser
+     * @group web_service
+     * @group user_movie_page_parser
      */
     public function testGetMoviesWithCaptcha(): void
     {
-        $classUnderTest = new UserMoviesParser(
+        $classUnderTest = new UserMoviePageParser(
             new CaptchaDetectorMock(true),
             new MovieListSearcherMock(),
             new MovieListParserMock(),
@@ -33,11 +34,12 @@ class UserMoviesParserTest extends ParserMain
     /**
      * @group unit
      * @group kinopoisk
-     * @group user_movies_parser
+     * @group web_service
+     * @group user_movie_page_parser
      */
     public function testGetMoviesWithoutMovieList(): void
     {
-        $classUnderTest = new UserMoviesParser(
+        $classUnderTest = new UserMoviePageParser(
             new CaptchaDetectorMock(),
             new MovieListSearcherMock(false),
             new MovieListParserMock(),
@@ -52,11 +54,12 @@ class UserMoviesParserTest extends ParserMain
     /**
      * @group unit
      * @group kinopoisk
-     * @group user_movies_parser
+     * @group web_service
+     * @group user_movie_page_parser
      */
     public function testGetMoviesWithNoOneMovie(): void
     {
-        $classUnderTest = new UserMoviesParser(
+        $classUnderTest = new UserMoviePageParser(
             new CaptchaDetectorMock(),
             new MovieListSearcherMock(),
             new MovieListParserMock(),
@@ -72,12 +75,13 @@ class UserMoviesParserTest extends ParserMain
     /**
      * @group unit
      * @group kinopoisk
-     * @group user_movies_parser
+     * @group web_service
+     * @group user_movie_page_parser
      */
     public function testGetMoviesWithSomeMovies(): void
     {
         $movieNumber = 3;
-        $classUnderTest = new UserMoviesParser(
+        $classUnderTest = new UserMoviePageParser(
             new CaptchaDetectorMock(),
             new MovieListSearcherMock(),
             new MovieListParserMock($movieNumber),

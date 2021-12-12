@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Kinopoisk\WebService\UserMoviesPageParser;
 
-class UserMoviesParser
+class UserMoviePageParser
 {
     use DomDocumentTrait;
 

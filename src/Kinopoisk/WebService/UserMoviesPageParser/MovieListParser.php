@@ -5,17 +5,17 @@ declare(strict_types=1);
 namespace Kinopoisk\WebService\UserMoviesPageParser;
 
 use DOMElement;
-use Kinopoisk\KinopoiskUserMovie;
-use Kinopoisk\KinopoiskUserMovies;
+use Kinopoisk\Dto\KinopoiskUserMovie;
+use Kinopoisk\Dto\KinopoiskUserMovieList;
 
 /**
  * todo систематизировать: подумать как разнести по разным классам получение разных данных
  */
 class MovieListParser
 {
-    public function getUserMoviesDto(DOMElement $moviesList): KinopoiskUserMovies
+    public function getUserMoviesDto(DOMElement $moviesList): KinopoiskUserMovieList
     {
-        $movies = new KinopoiskUserMovies();
+        $movies = new KinopoiskUserMovieList();
 
         foreach ($moviesList->childNodes as $movieListChild) {
             if (!$movieListChild instanceof DOMElement) {

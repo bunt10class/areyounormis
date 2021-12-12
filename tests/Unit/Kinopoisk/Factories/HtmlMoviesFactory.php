@@ -43,10 +43,10 @@ class HtmlMoviesFactory extends HtmlFactory
     {
         $infoElement = $this->collectElement('div', ['class' => 'info'], $this->collectInfoElement($movie));
 
-        $voteDate = $movie['vote_date'] ?? $this->faker->date('d.m.Y, H:i');
+        $voteDate = $movie['vote_date'] ?? '31.12.2020, 23:59';
         $voteDateElement = $this->collectElement('div', ['class' => 'date'], (string)$voteDate);
 
-        $userVote = $movie['user_vote'] ?? $this->faker->numberBetween(1, 10);
+        $userVote = $movie['user_vote'] ?? 5;
         $userVoteElement = $this->collectElement('div', ['class' => 'vote'], (string)$userVote);
 
         return $infoElement . $voteDateElement . $userVoteElement;
@@ -56,7 +56,7 @@ class HtmlMoviesFactory extends HtmlFactory
     {
         $ruNameElement = $this->collectRuNameElement($movie);
 
-        $enName = $movie['en_name'] ?? $this->faker->domainName;
+        $enName = $movie['en_name'] ?? 'some movie';
         $enNameElement = $this->collectElement('div', ['class' => 'nameEng'], (string)$enName);
 
         $ratingElement = $this->collectRatingElement($movie);
@@ -66,8 +66,8 @@ class HtmlMoviesFactory extends HtmlFactory
 
     protected function collectRuNameElement(array $movie): string
     {
-        $link = $movie['link'] ?? 'https://' . $this->faker->domainName;
-        $ruName = $movie['ru_name'] ?? $this->faker->domainName;
+        $link = $movie['link'] ?? 'https://some_url';
+        $ruName = $movie['ru_name'] ?? 'некоторый фильм';
         $linkElement = $this->collectElement('a', ['href' => $link], (string)$ruName);
 
         return $this->collectElement('div', ['class' => 'nameRus'], $linkElement);
@@ -75,13 +75,13 @@ class HtmlMoviesFactory extends HtmlFactory
 
     protected function collectRatingElement(array $movie): string
     {
-        $kpVote = $movie['kp_vote'] ?? $this->faker->randomFloat(3, 1, 10);
+        $kpVote = $movie['kp_vote'] ?? 5;
         $kpVoteElement = $this->collectElement('b', [], (string)$kpVote);
 
-        $voteNumber = $movie['vote_number'] ?? $this->faker->numberBetween(1, 1000000);
+        $voteNumber = $movie['vote_number'] ?? 1000;
         $voteNumberElement = $this->collectElement('span', [], '(' . $voteNumber . ')');
 
-        $durationInMinutes = $movie['duration_in_minutes'] ?? $this->faker->numberBetween(1, 300);
+        $durationInMinutes = $movie['duration_in_minutes'] ?? 120;
         $durationElement = $this->collectElement('span', [], $durationInMinutes . ' мин.');
 
         return $this->collectElement(

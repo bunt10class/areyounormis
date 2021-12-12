@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Kinopoisk;
+namespace Kinopoisk\Dto;
 
 class KinopoiskUserMovie
 {

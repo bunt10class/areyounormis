@@ -4,30 +4,30 @@ declare(strict_types=1);
 
 namespace Kinopoisk\WebService;
 
-use Kinopoisk\KinopoiskUserMovies;
+use Kinopoisk\Dto\KinopoiskUserMovieList;
 use Kinopoisk\KinopoiskUserMovieServiceInterface;
 use Kinopoisk\WebService\Client\KinopoiskWebClient;
-use Kinopoisk\WebService\UserMoviesPageParser\UserMoviesParser;
+use Kinopoisk\WebService\UserMoviesPageParser\UserMoviePageParser;
 
 /**
- * todo рефакторинг после системы логирования и после решения с отправкой повторных запросов в случае каптчи
+ * todo тесты и рефакторинг после системы логирования и после решения с отправкой повторных запросов в случае каптчи
  */
 class WebUserMoviesService implements KinopoiskUserMovieServiceInterface
 {
     protected KinopoiskWebClient $client;
-    protected UserMoviesParser $parser;
+    protected UserMoviePageParser $parser;
 
     public function __construct(
         KinopoiskWebClient $client,
-        UserMoviesParser $parser,
+        UserMoviePageParser $parser,
     ) {
         $this->client = $client;
         $this->parser = $parser;
     }
 
-    public function getUserMoviesById(int $userId): KinopoiskUserMovies
+    public function getUserMoviesById(int $userId): KinopoiskUserMovieList
     {
-        $userMovies = new KinopoiskUserMovies();
+        $userMovies = new KinopoiskUserMovieList();
 
         $page = 1;
         while (1) {
@@ -47,7 +47,7 @@ class WebUserMoviesService implements KinopoiskUserMovieServiceInterface
         return $userMovies;
     }
 
-    protected function getUserMoviesFromPage(int $userId, int $page): ?KinopoiskUserMovies
+    protected function getUserMoviesFromPage(int $userId, int $page): ?KinopoiskUserMovieList
     {
         $response = $this->client->getUserVotesByPage($userId, $page);
 

@@ -6,7 +6,6 @@ namespace Kinopoisk\WebService\Client;
 
 use GuzzleHttp\Client as GuzzleClient;
 use GuzzleHttp\Exception\ClientException;
-use GuzzleHttp\Exception\GuzzleException;
 use Psr\Http\Message\ResponseInterface;
 
 class KinopoiskWebClient
@@ -29,7 +28,7 @@ class KinopoiskWebClient
     {
         $response = $this->sendRequest(
             'GET',
-            WebHelper::getUserVotesPageEndpoint($userId, $page),
+            EndpointCollector::collectUserVotesPage($userId, $page),
             [
                 'headers' => $this->requestService->getHeaders(),
             ],

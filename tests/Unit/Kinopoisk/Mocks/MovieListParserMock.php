@@ -5,17 +5,17 @@ declare(strict_types=1);
 namespace Tests\Unit\Kinopoisk\Mocks;
 
 use DOMElement;
-use Kinopoisk\KinopoiskUserMovies;
+use Kinopoisk\Dto\KinopoiskUserMovieList;
 use Kinopoisk\WebService\UserMoviesPageParser\MovieListParser;
 use Tests\Unit\Kinopoisk\Factories\KinopoiskUserMovieFactory;
 
 class MovieListParserMock extends MovieListParser
 {
-    protected KinopoiskUserMovies $userMoviesDto;
+    protected KinopoiskUserMovieList $userMoviesDto;
 
     public function __construct(int $movieNumber = 0)
     {
-        $this->userMoviesDto = new KinopoiskUserMovies();
+        $this->userMoviesDto = new KinopoiskUserMovieList();
 
         $userMovieDtoFactory = new KinopoiskUserMovieFactory();
         for ($i = 0; $i < $movieNumber; $i++) {
@@ -23,7 +23,7 @@ class MovieListParserMock extends MovieListParser
         }
     }
 
-    public function getUserMoviesDto(DOMElement $moviesList): KinopoiskUserMovies
+    public function getUserMoviesDto(DOMElement $moviesList): KinopoiskUserMovieList
     {
         return $this->userMoviesDto;
     }

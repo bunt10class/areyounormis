@@ -7,7 +7,6 @@
         "ext-curl": "*",
         "ext-dom": "*",
         "ext-libxml": "*",
-        "fzaninotto/faker": "^1.5",
         "guzzlehttp/guzzle": "^7.0",
         "laminas/laminas-diactoros": "^2.8",
         "laminas/laminas-httphandlerrunner": "^2.1",

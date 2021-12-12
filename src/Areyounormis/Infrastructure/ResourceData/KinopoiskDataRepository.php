@@ -13,8 +13,8 @@ use Areyounormis\Domain\Vote\VoteSystem;
 use Areyounormis\Domain\Vote\Exceptions\VoteException;
 use Areyounormis\Domain\Vote\Factories\VoteFactory;
 use Areyounormis\Domain\Vote\Factories\VoteSystemFactory;
-use Kinopoisk\KinopoiskHelper;
-use Kinopoisk\KinopoiskUserMovie;
+use Kinopoisk\Helpers\KinopoiskHelper;
+use Kinopoisk\Dto\KinopoiskUserMovie;
 use Kinopoisk\KinopoiskUserMovieServiceInterface;
 
 class KinopoiskDataRepository implements ResourceDataRepositoryInterface

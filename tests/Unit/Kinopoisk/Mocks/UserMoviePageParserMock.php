@@ -4,15 +4,15 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Kinopoisk\Mocks;
 
-use Kinopoisk\KinopoiskUserMovies;
+use Kinopoisk\Dto\KinopoiskUserMovieList;
 use Kinopoisk\WebService\UserMoviesPageParser\UserMoviesPage;
-use Kinopoisk\WebService\UserMoviesPageParser\UserMoviesParser;
+use Kinopoisk\WebService\UserMoviesPageParser\UserMoviePageParser;
 
-class UserMoviesParserMock extends UserMoviesParser
+class UserMoviePageParserMock extends UserMoviePageParser
 {
     protected UserMoviesPage $userMoviesPage;
 
-    public function __construct(bool $isCaptcha = false, ?KinopoiskUserMovies $userMoviesDto = null)
+    public function __construct(bool $isCaptcha = false, ?KinopoiskUserMovieList $userMoviesDto = null)
     {
         $this->userMoviesPage = new UserMoviesPage($isCaptcha, $userMoviesDto);
     }

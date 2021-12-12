@@ -6,13 +6,10 @@ namespace Tests\Unit\Core;
 
 use Core\Config;
 use Core\Exceptions\InvalidArgumentConfigException;
-use Faker\Factory;
-use Faker\Generator;
 use PHPUnit\Framework\TestCase;
 
 class ConfigTest extends TestCase
 {
-    protected Generator $faker;
     protected Config $classUnderTest;
 
     protected function setUp(): void
@@ -20,7 +17,6 @@ class ConfigTest extends TestCase
         parent::setUp();
 
         $this->classUnderTest = new Config([]);
-        $this->faker = Factory::create();
     }
 
     /**
@@ -55,7 +51,7 @@ class ConfigTest extends TestCase
     public function testSetHasGetBool(): void
     {
         $key = 'some_key';
-        $value = $this->faker->boolean();
+        $value = true;
 
         $this->classUnderTest->set($key, $value);
 
@@ -71,7 +67,7 @@ class ConfigTest extends TestCase
     public function testSetHasGetString(): void
     {
         $key = 'some_key';
-        $value = $this->faker->name;
+        $value = 'some_string';
 
         $this->classUnderTest->set($key, $value);
 
@@ -87,7 +83,7 @@ class ConfigTest extends TestCase
     public function testSetHasGetInt(): void
     {
         $key = 'some_key';
-        $value = $this->faker->numberBetween();
+        $value = 123;
 
         $this->classUnderTest->set($key, $value);
 
@@ -103,7 +99,7 @@ class ConfigTest extends TestCase
     public function testSetHasGetFloat(): void
     {
         $key = 'some_key';
-        $value = $this->faker->randomFloat();
+        $value = 1.23;
 
         $this->classUnderTest->set($key, $value);
 
