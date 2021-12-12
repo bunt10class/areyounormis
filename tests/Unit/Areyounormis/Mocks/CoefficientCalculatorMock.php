@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Areyounormis\Mocks;
 
-use Areyounormis\Coefficient\CoefficientCalculator;
-use Areyounormis\Vote\Votes;
+use Areyounormis\Service\Coefficient\CoefficientCalculator;
+use Areyounormis\Domain\Vote\VoteList;
 
 class CoefficientCalculatorMock extends CoefficientCalculator
 {
@@ -16,7 +16,7 @@ class CoefficientCalculatorMock extends CoefficientCalculator
         $this->value = $value;
     }
 
-    public function calculateValue(string $type, Votes $votes): float
+    public function calculateValue(string $type, VoteList $votes): float
     {
         return $this->value;
     }

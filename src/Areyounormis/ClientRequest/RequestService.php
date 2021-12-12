@@ -40,7 +40,7 @@ class RequestService implements RequestServiceInterface
     /**
      * @throws InvalidRequestInString
      */
-    protected function parseRequest(): RequestDto
+    protected function parseRequest(): ClientRequest
     {
         $filePath = 'storage/app/kinopoisk_requests/curl_bash.txt';
         $contents = file_get_contents($filePath);

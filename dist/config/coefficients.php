@@ -1,6 +1,6 @@
 <?php
 
-use Areyounormis\Coefficient\CoefficientHelper;
+use Areyounormis\Domain\Coefficient\CoefficientHelper;
 
 return [
     CoefficientHelper::NORM_TYPE => [

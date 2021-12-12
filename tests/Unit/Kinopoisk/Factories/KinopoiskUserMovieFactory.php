@@ -20,7 +20,7 @@ class KinopoiskUserMovieFactory
         $this->ruFaker = Factory::create('ru_RU');
     }
 
-    public function makeKinopoiskUserMovie(array $data = []): KinopoiskUserMovie
+    public function make(array $data = []): KinopoiskUserMovie
     {
         return new KinopoiskUserMovie(
             $data['ru_name'] ?? null,
@@ -34,28 +34,28 @@ class KinopoiskUserMovieFactory
         );
     }
 
-    public function makeKinopoiskUserMovieWithOne(array $data = []): KinopoiskUserMovies
+    public function makeListWithOne(array $data = []): KinopoiskUserMovies
     {
-        $userMovie = $this->makeKinopoiskUserMovie($data);
+        $userMovie = $this->make($data);
 
-        $result = $this->makeEmptyKinopoiskUserMovies();
+        $result = $this->makeEmptyList();
         $result->addItem($userMovie);
         return $result;
     }
 
-    public function makeKinopoiskUserMoviesWithSome(int $number): KinopoiskUserMovies
+    public function makeListWithSome(int $number): KinopoiskUserMovies
     {
         $result = new KinopoiskUserMovies();
 
         for ($i = 0; $i < $number; $i++) {
-            $result->addItem($this->makeKinopoiskUserMovie());
+            $result->addItem($this->make());
         }
 
         return $result;
     }
 
-    public function makeEmptyKinopoiskUserMovies(): KinopoiskUserMovies
+    public function makeEmptyList(): KinopoiskUserMovies
     {
-        return $this->makeKinopoiskUserMoviesWithSome(0);
+        return $this->makeListWithSome(0);
     }
 }

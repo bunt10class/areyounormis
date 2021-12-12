@@ -4,20 +4,20 @@ declare(strict_types=1);
 
 namespace Areyounormis\ClientRequest\Parser;
 
-use Areyounormis\ClientRequest\RequestDto;
+use Areyounormis\ClientRequest\ClientRequest;
 
 class CurlBashRequestParser implements RequestParserInterface
 {
     /**
      * @throws InvalidRequestInString
      */
-    public function parse(string $parsedString): RequestDto
+    public function parse(string $parsedString): ClientRequest
     {
         //todo обработка пустой строки
         $endpoint = $this->retrieveEndpoint($parsedString);
         $headers = $this->retrieveHeaders($parsedString);
 
-        return new RequestDto($endpoint, $headers);
+        return new ClientRequest($endpoint, $headers);
     }
 
     /**

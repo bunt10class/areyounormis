@@ -1,5 +1,5 @@
 <?php
 
 return [
-    \Areyounormis\Report\UserReportConsumer::class,
+    \Areyounormis\Service\Report\UserReportConsumer::class,
 ];

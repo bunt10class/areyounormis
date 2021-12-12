@@ -19,7 +19,7 @@ class MovieListParserMock extends MovieListParser
 
         $userMovieDtoFactory = new KinopoiskUserMovieFactory();
         for ($i = 0; $i < $movieNumber; $i++) {
-            $this->userMoviesDto->addItem($userMovieDtoFactory->makeKinopoiskUserMovie());
+            $this->userMoviesDto->addItem($userMovieDtoFactory->make());
         }
     }
 

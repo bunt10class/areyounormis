@@ -4,20 +4,20 @@
  * @var array $user
  * @var array $votes_system
  * @var array $coefficient_values
- * @var array $movie_number
- * @var array $movie_votes
+ * @var array $content_number
+ * @var array $content_vote_list
  */
 
 $this->addData('title', 'Отчет пользователя');
 $this->setExtend('layout/default');
 ?>
 
-<?php if ($movie_number) { ?>
+<?php if ($content_number) { ?>
 
     <div class="jumbotron navbar-light">
         <div class="container">
             <h2 style="text-align: center;">Отчет по оценкам пользователя <?= $user['id'] ?> из Кинопоиска</h2>
-            <p style="text-align: right;">Построен по <?= $movie_number ?> оцененному контенту</p>
+            <p style="text-align: right;">Построен по <?= $content_number ?> оцененному контенту</p>
         </div>
     </div>
 
@@ -41,12 +41,12 @@ $this->setExtend('layout/default');
     <?php
     $top = [
         [
-            'title' => 'Топ ' . $movie_votes['over_rates']['number'] . ' переоцененных тобой',
-            'movie_votes' => $movie_votes['over_rates']['movie_votes'],
+            'title' => 'Топ ' . $content_vote_list['over_rates']['number'] . ' переоцененных тобой',
+            'content_vote_list' => $content_vote_list['over_rates']['content_vote_list'],
         ],
         [
-            'title' => 'Топ ' . $movie_votes['under_rates']['number'] . ' недооцененных тобой',
-            'movie_votes' => $movie_votes['under_rates']['movie_votes'],
+            'title' => 'Топ ' . $content_vote_list['under_rates']['number'] . ' недооцененных тобой',
+            'content_vote_list' => $content_vote_list['under_rates']['content_vote_list'],
         ],
     ];
     foreach ($top as $data) {
@@ -67,21 +67,21 @@ $this->setExtend('layout/default');
             <tbody>
                 <?php
                 $number = 1;
-                foreach ($data['movie_votes'] as $movieVote) {
+                foreach ($data['content_vote_list'] as $contentVote) {
                 ?>
                     <tr>
                         <td style="text-align: center;"><?= $number ?></td>
                         <td>
                             <a
-                                href="<?= $movieVote['movie']['link'] ?>"
+                                href="<?= $contentVote['content']['link'] ?>"
                                 style="text-align: center;"
                             >
-                                <?= $movieVote['movie']['name'] ?>
+                                <?= $contentVote['content']['name'] ?>
                             </a>
                         </td>
-                        <td style="text-align: center;"><?= $movieVote['rate']['site_vote'] ?></td>
-                        <td style="text-align: center;"><?= $movieVote['rate']['user_vote'] ?></td>
-                        <td style="text-align: center;"><?= abs($movieVote['rate']['absolute_diff']) ?></td>
+                        <td style="text-align: center;"><?= $contentVote['rate']['resource_vote'] ?></td>
+                        <td style="text-align: center;"><?= $contentVote['rate']['user_vote'] ?></td>
+                        <td style="text-align: center;"><?= abs($contentVote['rate']['absolute_diff']) ?></td>
                     </tr>
                     <?php $number++ ?>
                 <?php } ?>
@@ -92,12 +92,12 @@ $this->setExtend('layout/default');
     <?php } ?>
 
     <div class="panel" style="margin-bottom: 5%">
-        <p style="text-align: center; font-weight: bold;">Оценено также как на ресурсе (всего: <?= $movie_votes['norm_rates']['number'] ?>)</p>
+        <p style="text-align: center; font-weight: bold;">Оценено также как на ресурсе (всего: <?= $content_vote_list['norm_rates']['number'] ?>)</p>
         <ul class="list-group">
-            <?php foreach ($movie_votes['norm_rates']['movie_votes'] as $movieVote) { ?>
+            <?php foreach ($content_vote_list['norm_rates']['content_vote_list'] as $contentVote) { ?>
                 <li class="list-group-item">
-                    <a href="<?= $movieVote['movie']['link'] ?>" style="text-align: center;">
-                        <?= $movieVote['movie']['name'] ?>
+                    <a href="<?= $contentVote['content']['link'] ?>" style="text-align: center;">
+                        <?= $contentVote['content']['name'] ?>
                     </a>
                 </li>
             <?php } ?>

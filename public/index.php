@@ -1,6 +1,6 @@
 <?php
 
-use Areyounormis\Http\WebController;
+use Areyounormis\UI\Http\WebController;
 use Core\Container;
 use Laminas\Diactoros\ServerRequestFactory;
 use Laminas\HttpHandlerRunner\Emitter\SapiEmitter;

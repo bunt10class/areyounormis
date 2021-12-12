@@ -9,7 +9,7 @@ use Predis\Client;
 
 class RequestRedisRepository
 {
-    protected const HEADERS_KEY = 'request_headers';
+    protected const HEADERS_KEY = 'request-headers';
 
     protected Client $client;
     protected Config $config;

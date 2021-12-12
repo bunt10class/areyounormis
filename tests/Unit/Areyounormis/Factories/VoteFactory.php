@@ -4,20 +4,32 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Areyounormis\Factories;
 
-use Areyounormis\Vote\Vote;
-use Areyounormis\Vote\VoteFactory as AreyounormisVoteFactory;
-use Areyounormis\Vote\VoteSystem;
-use Areyounormis\Vote\VoteSystemFactory;
+use Areyounormis\Domain\Vote\Vote;
+use Areyounormis\Domain\Vote\VoteList;
+use Areyounormis\Domain\Vote\VoteSystem;
 
 class VoteFactory
 {
-    public static function getTenZeroOneVoteSystem(): VoteSystem
+    public static function getDefaultItem(float $userVote, float $siteVote): Vote
     {
-        return VoteSystemFactory::make(10, 0, 1);
+        $voteSystem = VoteSystemFactory::getDefault();
+        $absoluteDiff = $userVote - $siteVote;
+        $relativeDiff = round($absoluteDiff / $voteSystem->getDiff(), VoteSystem::PRECISION);
+        $moduleRelativeDiff = abs($relativeDiff);
+
+        return new Vote($userVote, $siteVote, $absoluteDiff, $relativeDiff, $moduleRelativeDiff);
     }
 
-    public static function getTenZeroOneVote(float $userVote, float $siteVote): Vote
+    public static function getEmptyList(): VoteList
     {
-        return AreyounormisVoteFactory::make(self::getTenZeroOneVoteSystem(), $userVote, $siteVote);
+        return new VoteList();
+    }
+
+    public static function getListWithOneDefaultItem(float $userVote, float $siteVote): VoteList
+    {
+        $votes = self::getEmptyList();
+        $votes->addItem(self::getDefaultItem($userVote, $siteVote));
+
+        return $votes;
     }
 }
