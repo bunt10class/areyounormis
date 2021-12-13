@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Tests\Unit\Areyounormis\Service\Content\ContentVoteListCollector;
+namespace Tests\Unit\Areyounormis\Service\Content\ContentVoteListFacade;
 
-use Areyounormis\Service\Content\ContentVoteListCollector;
+use Areyounormis\Service\Content\ContentVoteListFacade;
 use PHPUnit\Framework\TestCase;
 use Tests\Unit\Areyounormis\Factories\ContentVoteFactory;
 
@@ -20,7 +20,7 @@ class SortMovieVotesByNameTest extends TestCase
     {
         $list = ContentVoteFactory::getEmptyList();
 
-        $result = ContentVoteListCollector::sortByContentName($list);
+        $result = ContentVoteListFacade::sortByContentName($list);
 
         self::assertEmpty($result->getItems());
     }
@@ -35,7 +35,7 @@ class SortMovieVotesByNameTest extends TestCase
     {
         $list = ContentVoteFactory::getListWithSomeItems($number = 3);
 
-        $result = ContentVoteListCollector::sortByContentName($list);
+        $result = ContentVoteListFacade::sortByContentName($list);
 
         self::assertCount($number, $result->getItems());
     }
@@ -62,7 +62,7 @@ class SortMovieVotesByNameTest extends TestCase
             'ru_name' => $ruName4 = 'aaa',
         ]));
 
-        $result = ContentVoteListCollector::sortByContentName($list, true);
+        $result = ContentVoteListFacade::sortByContentName($list, true);
 
         self::assertEquals($ruName4, $result->getItems()[0]->getContent()->getRuName());
         self::assertEquals($ruName1, $result->getItems()[1]->getContent()->getRuName());
@@ -92,7 +92,7 @@ class SortMovieVotesByNameTest extends TestCase
             'ru_name' => $ruName4 = 'aaa',
         ]));
 
-        $result = ContentVoteListCollector::sortByContentName($list, false);
+        $result = ContentVoteListFacade::sortByContentName($list, false);
 
         self::assertEquals($ruName2, $result->getItems()[0]->getContent()->getRuName());
         self::assertEquals($ruName3, $result->getItems()[1]->getContent()->getRuName());

@@ -2,13 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Tests\Unit\Areyounormis\Infrastructure\Coefficient\CoefficientValidator;
+namespace Tests\Unit\Areyounormis\Service\Coefficient\CoefficientValidator;
 
-use Areyounormis\Infrastructure\Coefficient\CoefficientValidator;
-use Areyounormis\Infrastructure\Coefficient\Exceptions\InvalidCoefficientTypeException;
-use PHPUnit\Framework\TestCase;
+use Areyounormis\Service\Coefficient\Exceptions\InvalidCoefficientTypeException;
 
-class ValidateTypeTest extends TestCase
+class ValidateTypeTest extends CoefficientValidatorMain
 {
     /**
      * @group unit
@@ -18,7 +16,7 @@ class ValidateTypeTest extends TestCase
      */
     public function testWithExistentType(): void
     {
-        CoefficientValidator::validateType('norm');
+        $this->classUnderTest->validateType('norm');
 
         self::assertTrue(true);
     }
@@ -33,6 +31,6 @@ class ValidateTypeTest extends TestCase
     {
         self::expectException(InvalidCoefficientTypeException::class);
 
-        CoefficientValidator::validateType('not_existent_type');
+        $this->classUnderTest->validateType('not_existent_type');
     }
 }

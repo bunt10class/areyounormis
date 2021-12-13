@@ -8,8 +8,8 @@ use Areyounormis\Domain\Content\ContentVote;
 use Areyounormis\Domain\Content\ContentVoteList;
 use Areyounormis\Domain\Report\ReportConfig;
 use Areyounormis\Domain\Report\UserResourceReport;
-use Areyounormis\Service\Content\ContentCollector;
-use Areyounormis\Service\Content\ContentVoteListCollector;
+use Areyounormis\Service\Content\ContentFacade;
+use Areyounormis\Service\Content\ContentVoteListFacade;
 
 class UserResourceReportFacade
 {
@@ -78,9 +78,9 @@ class UserResourceReportFacade
             }
         }
 
-        $normRates = ContentVoteListCollector::sortByContentName($normRates);
-        $overRates = ContentVoteListCollector::getTheFirstNumberMaxDiff($overRates, $this->config->getMaxOverRateNumber());
-        $underRates = ContentVoteListCollector::getTheFirstNumberMaxDiff($underRates, $this->config->getMaxUnderRateNumber());
+        $normRates = ContentVoteListFacade::sortByContentName($normRates);
+        $overRates = ContentVoteListFacade::collectTheFirstNumberMaxDiff($overRates, $this->config->getMaxOverRateNumber());
+        $underRates = ContentVoteListFacade::collectTheFirstNumberMaxDiff($underRates, $this->config->getMaxUnderRateNumber());
     }
 
     protected function getPrettyContentVoteList(ContentVoteList $list): array
@@ -104,7 +104,7 @@ class UserResourceReportFacade
 
         return [
             'content' => [
-                'name' => ContentCollector::getFullName($content),
+                'name' => ContentFacade::collectFullName($content),
                 'link' => $content->getLink(),
             ],
             'rate' => [

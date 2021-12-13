@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Tests\Unit\Areyounormis\Service\Content\ContentVoteListCollector;
+namespace Tests\Unit\Areyounormis\Service\Content\ContentVoteListFacade;
 
-use Areyounormis\Service\Content\ContentVoteListCollector;
+use Areyounormis\Service\Content\ContentVoteListFacade;
 use PHPUnit\Framework\TestCase;
 use Tests\Unit\Areyounormis\Factories\ContentVoteFactory;
 
-class GetTheFirstNumberMaxDiffTest extends TestCase
+class CollectTheFirstNumberMaxDiffTest extends TestCase
 {
     /**
      * @group unit
@@ -16,7 +16,7 @@ class GetTheFirstNumberMaxDiffTest extends TestCase
      * @group content
      * @group content_vote_list_collector
      */
-    public function testGetFromEmpty(): void
+    public function testWithSomeItems(): void
     {
         $list = ContentVoteFactory::getEmptyList();
         $list->addItem(ContentVoteFactory::getItem([
@@ -40,7 +40,7 @@ class GetTheFirstNumberMaxDiffTest extends TestCase
             'site_vote' => 6,
         ]));
 
-        $result = ContentVoteListCollector::getTheFirstNumberMaxDiff($list, $number = 3);
+        $result = ContentVoteListFacade::collectTheFirstNumberMaxDiff($list, $number = 3);
 
         self::assertCount($number, $result->getItems());
         self::assertEquals($ruName2, $result->getItems()[0]->getContent()->getRuName());

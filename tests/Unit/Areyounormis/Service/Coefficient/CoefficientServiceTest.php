@@ -5,13 +5,15 @@ declare(strict_types=1);
 namespace Tests\Unit\Areyounormis\Service\Coefficient;
 
 use Areyounormis\Service\Coefficient\CoefficientService;
-use Areyounormis\Infrastructure\Coefficient\Exceptions\InvalidCoefficientConfigException;
-use Areyounormis\Infrastructure\Coefficient\Exceptions\InvalidCoefficientValueException;
+use Areyounormis\Service\Coefficient\Exceptions\InvalidCoefficientConfigException;
+use Areyounormis\Service\Coefficient\Exceptions\InvalidCoefficientTypeException;
+use Areyounormis\Service\Coefficient\Exceptions\InvalidCoefficientValueException;
 use PHPUnit\Framework\TestCase;
 use Tests\Unit\Areyounormis\Factories\ConfigDataFactory;
 use Tests\Unit\Areyounormis\Factories\VoteFactory;
 use Tests\Unit\Areyounormis\Mocks\CoefficientCalculatorMock;
 use Tests\Unit\Areyounormis\Mocks\CoefficientConfigRepositoryMock;
+use Tests\Unit\Areyounormis\Mocks\CoefficientValidatorMock;
 
 class CoefficientServiceTest extends TestCase
 {
@@ -21,13 +23,52 @@ class CoefficientServiceTest extends TestCase
      * @group coefficient
      * @group coefficient_service
      */
-    public function testGetCoefficientWithInvalidCoefficientConfigException(): void
+    public function testGetCoefficientWithInvalidArgumentConfigException(): void
     {
         self::expectException(InvalidCoefficientConfigException::class);
 
         $classUnderTest = new CoefficientService(
             new CoefficientCalculatorMock(),
-            new CoefficientConfigRepositoryMock(ConfigDataFactory::getDefaultCoefficientConfigData(), true)
+            new CoefficientConfigRepositoryMock([], true),
+            new CoefficientValidatorMock(),
+        );
+
+        $classUnderTest->collectCoefficientValue('some_type', 0.5);
+    }
+
+    /**
+     * @group unit
+     * @group areyounormis
+     * @group coefficient
+     * @group coefficient_service
+     */
+    public function testGetCoefficientWithInvalidCoefficientTypeException(): void
+    {
+        self::expectException(InvalidCoefficientTypeException::class);
+
+        $classUnderTest = new CoefficientService(
+            new CoefficientCalculatorMock(),
+            new CoefficientConfigRepositoryMock(),
+            new CoefficientValidatorMock(true),
+        );
+
+        $classUnderTest->collectCoefficientValue('some_type', 0.5);
+    }
+
+    /**
+     * @group unit
+     * @group areyounormis
+     * @group coefficient
+     * @group coefficient_service
+     */
+    public function testGetCoefficientWithInvalidArgumentException(): void
+    {
+        self::expectException(InvalidCoefficientConfigException::class);
+
+        $classUnderTest = new CoefficientService(
+            new CoefficientCalculatorMock(),
+            new CoefficientConfigRepositoryMock(),
+            new CoefficientValidatorMock(false, true),
         );
 
         $classUnderTest->collectCoefficientValue('some_type', 0.5);
@@ -43,10 +84,7 @@ class CoefficientServiceTest extends TestCase
     {
         self::expectException(InvalidCoefficientValueException::class);
 
-        $classUnderTest = new CoefficientService(
-            new CoefficientCalculatorMock(),
-            new CoefficientConfigRepositoryMock(ConfigDataFactory::getDefaultCoefficientConfigData())
-        );
+        $classUnderTest = $this->getDefaultClassUnderTest();
 
         $classUnderTest->collectCoefficientValue('some_type', 1.1);
     }
@@ -71,7 +109,8 @@ class CoefficientServiceTest extends TestCase
         );
         $classUnderTest = new CoefficientService(
             new CoefficientCalculatorMock(),
-            new CoefficientConfigRepositoryMock($configData)
+            new CoefficientConfigRepositoryMock($configData),
+            new CoefficientValidatorMock(),
         );
 
         $result = $classUnderTest->collectCoefficientValue($type = 'some_type', $value = 0.5);
@@ -92,10 +131,7 @@ class CoefficientServiceTest extends TestCase
      */
     public function testGetCoefficientWithRightValuePrecision(): void
     {
-        $classUnderTest = new CoefficientService(
-            new CoefficientCalculatorMock(),
-            new CoefficientConfigRepositoryMock(ConfigDataFactory::getDefaultCoefficientConfigData())
-        );
+        $classUnderTest = $this->getDefaultClassUnderTest();
 
         $result = $classUnderTest->collectCoefficientValue('some_type', 0.5001);
 
@@ -127,7 +163,11 @@ class CoefficientServiceTest extends TestCase
         ];
         $levels = [$level1, $level2, $level3];
         $configData = ConfigDataFactory::getCoefficientConfigData($levels, 'some_name', 'some_description');
-        $classUnderTest = new CoefficientService(new CoefficientCalculatorMock(), new CoefficientConfigRepositoryMock($configData));
+        $classUnderTest = new CoefficientService(
+            new CoefficientCalculatorMock(),
+            new CoefficientConfigRepositoryMock($configData),
+            new CoefficientValidatorMock(),
+        );
 
         $result = $classUnderTest->collectCoefficientValue('some_type', 0.5);
 
@@ -145,11 +185,21 @@ class CoefficientServiceTest extends TestCase
     {
         $classUnderTest = new CoefficientService(
             new CoefficientCalculatorMock($value = 0.5),
-            new CoefficientConfigRepositoryMock(ConfigDataFactory::getDefaultCoefficientConfigData())
+            new CoefficientConfigRepositoryMock(ConfigDataFactory::getDefaultCoefficientConfigData()),
+            new CoefficientValidatorMock(),
         );
 
         $result = $classUnderTest->calculateCoefficientValueByVotes('some_type', VoteFactory::getEmptyList());
 
         self::assertEquals($value, $result->getValue());
+    }
+
+    protected function getDefaultClassUnderTest(): CoefficientService
+    {
+        return new CoefficientService(
+            new CoefficientCalculatorMock(),
+            new CoefficientConfigRepositoryMock(ConfigDataFactory::getDefaultCoefficientConfigData()),
+            new CoefficientValidatorMock(),
+        );
     }
 }

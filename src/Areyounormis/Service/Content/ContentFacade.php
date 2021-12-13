@@ -6,11 +6,11 @@ namespace Areyounormis\Service\Content;
 
 use Areyounormis\Domain\Content\Content;
 
-class ContentCollector
+class ContentFacade
 {
     protected const DEFAULT_FULL_NAME = 'Без названия';
 
-    public static function getFullName(Content $content): string
+    public static function collectFullName(Content $content): string
     {
         $enName = $content->getEnName();
 

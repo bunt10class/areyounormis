@@ -4,9 +4,8 @@ declare(strict_types=1);
 
 namespace Areyounormis\Infrastructure\Coefficient;
 
-use Areyounormis\Infrastructure\Coefficient\Exceptions\InvalidCoefficientConfigException;
-use Areyounormis\Infrastructure\Coefficient\Exceptions\InvalidCoefficientTypeException;
 use Core\Config;
+use Core\Exceptions\InvalidArgumentConfigException;
 
 class CoefficientConfigRepository
 {
@@ -18,21 +17,10 @@ class CoefficientConfigRepository
     }
 
     /**
-     * @throws InvalidCoefficientTypeException
-     * @throws InvalidCoefficientConfigException
+     * @throws InvalidArgumentConfigException
      */
     public function getByType(string $type): array
     {
-        CoefficientValidator::validateType($type);
-
-        try {
-            $coefficient = $this->config->get('coefficients.' . $type);
-
-            CoefficientValidator::validateConfigData($coefficient);
-
-            return $coefficient;
-        } catch (\InvalidArgumentException $exception) {
-            throw new InvalidCoefficientConfigException();
-        }
+        return $this->config->get('coefficients.' . $type);
     }
 }

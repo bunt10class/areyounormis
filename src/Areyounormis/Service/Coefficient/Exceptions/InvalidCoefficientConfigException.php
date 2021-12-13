@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Areyounormis\Infrastructure\Coefficient\Exceptions;
+namespace Areyounormis\Service\Coefficient\Exceptions;
 
 class InvalidCoefficientConfigException extends CoefficientException
 {

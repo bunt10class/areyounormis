@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Areyounormis\Service\Coefficient;
 
-use Areyounormis\Infrastructure\Coefficient\Exceptions\InvalidCoefficientTypeException;
 use Areyounormis\Domain\Coefficient\CoefficientHelper;
 use Areyounormis\Domain\Vote\VoteList;
+use Areyounormis\Service\Coefficient\Exceptions\InvalidCoefficientTypeException;
 
 class CoefficientCalculator
 {

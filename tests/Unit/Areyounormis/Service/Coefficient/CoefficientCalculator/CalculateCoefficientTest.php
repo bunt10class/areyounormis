@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Tests\Unit\Areyounormis\Service\Coefficient\CoefficientCalculator;
 
 use Areyounormis\Service\Coefficient\CoefficientCalculator;
-use Areyounormis\Infrastructure\Coefficient\Exceptions\InvalidCoefficientTypeException;
+use Areyounormis\Service\Coefficient\Exceptions\InvalidCoefficientTypeException;
 use PHPUnit\Framework\MockObject\MockObject;
 use Tests\Unit\Areyounormis\Factories\VoteFactory;
 

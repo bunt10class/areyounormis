@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Tests\Unit\Areyounormis\Service\Content\ContentVoteListCollector;
+namespace Tests\Unit\Areyounormis\Service\Content\ContentVoteListFacade;
 
-use Areyounormis\Service\Content\ContentVoteListCollector;
+use Areyounormis\Service\Content\ContentVoteListFacade;
 use PHPUnit\Framework\TestCase;
 use Tests\Unit\Areyounormis\Factories\ContentVoteFactory;
 
@@ -20,7 +20,7 @@ class SortByModuleRelativeDiffTest extends TestCase
     {
         $list = ContentVoteFactory::getEmptyList();
 
-        $result = ContentVoteListCollector::sortByModuleRelativeDiff($list);
+        $result = ContentVoteListFacade::sortByModuleRelativeDiff($list);
 
         self::assertEmpty($result->getItems());
     }
@@ -35,7 +35,7 @@ class SortByModuleRelativeDiffTest extends TestCase
     {
         $list = ContentVoteFactory::getListWithSomeItems($number = 3);
 
-        $result = ContentVoteListCollector::sortByModuleRelativeDiff($list);
+        $result = ContentVoteListFacade::sortByModuleRelativeDiff($list);
 
         self::assertCount($number, $result->getItems());
     }
@@ -70,7 +70,7 @@ class SortByModuleRelativeDiffTest extends TestCase
             'site_vote' => 6,
         ]));
 
-        $result = ContentVoteListCollector::sortByModuleRelativeDiff($list, true);
+        $result = ContentVoteListFacade::sortByModuleRelativeDiff($list, true);
 
         self::assertEquals($ruName3, $result->getItems()[0]->getContent()->getRuName());
         self::assertEquals($ruName4, $result->getItems()[1]->getContent()->getRuName());
@@ -108,7 +108,7 @@ class SortByModuleRelativeDiffTest extends TestCase
             'site_vote' => 6,
         ]));
 
-        $result = ContentVoteListCollector::sortByModuleRelativeDiff($list, false);
+        $result = ContentVoteListFacade::sortByModuleRelativeDiff($list, false);
 
         self::assertEquals($ruName2, $result->getItems()[0]->getContent()->getRuName());
         self::assertEquals($ruName1, $result->getItems()[1]->getContent()->getRuName());

@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Areyounormis\Mocks;
 
-use Areyounormis\Infrastructure\Coefficient\Exceptions\InvalidCoefficientConfigException;
 use Areyounormis\Infrastructure\Coefficient\CoefficientConfigRepository;
+use Core\Exceptions\InvalidArgumentConfigException;
 
 class CoefficientConfigRepositoryMock extends CoefficientConfigRepository
 {
@@ -21,7 +21,7 @@ class CoefficientConfigRepositoryMock extends CoefficientConfigRepository
     public function getByType(string $type): array
     {
         if ($this->isException) {
-            throw new InvalidCoefficientConfigException();
+            throw new InvalidArgumentConfigException();
         }
         return $this->data;
     }

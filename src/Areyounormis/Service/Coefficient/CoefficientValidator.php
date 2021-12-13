@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Areyounormis\Infrastructure\Coefficient;
+namespace Areyounormis\Service\Coefficient;
 
-use Areyounormis\Infrastructure\Coefficient\Exceptions\InvalidCoefficientTypeException;
 use Areyounormis\Domain\Coefficient\CoefficientHelper;
+use Areyounormis\Service\Coefficient\Exceptions\InvalidCoefficientTypeException;
 use Webmozart\Assert\Assert;
 use Webmozart\Assert\InvalidArgumentException;
 
@@ -14,7 +14,7 @@ class CoefficientValidator
     /**
      * @throws InvalidCoefficientTypeException
      */
-    public static function validateType(string $type): void
+    public function validateType(string $type): void
     {
         if (!in_array($type, CoefficientHelper::TYPES)) {
             throw new InvalidCoefficientTypeException($type);
@@ -24,7 +24,7 @@ class CoefficientValidator
     /**
      * @throws InvalidArgumentException
      */
-    public static function validateConfigData(mixed $coefficient): void
+    public function validateConfigData(mixed $coefficient): void
     {
         Assert::isArray($coefficient);
 

@@ -4,29 +4,33 @@ declare(strict_types=1);
 
 namespace Areyounormis\Service\Coefficient;
 
-use Areyounormis\Infrastructure\Coefficient\Exceptions\CoefficientException;
-use Areyounormis\Infrastructure\Coefficient\Exceptions\InvalidCoefficientConfigException;
-use Areyounormis\Infrastructure\Coefficient\Exceptions\InvalidCoefficientTypeException;
-use Areyounormis\Infrastructure\Coefficient\Exceptions\InvalidCoefficientValueException;
-use Areyounormis\Infrastructure\Coefficient\CoefficientConfigRepository;
 use Areyounormis\Domain\Coefficient\Coefficient;
 use Areyounormis\Domain\Coefficient\CoefficientLevel;
 use Areyounormis\Domain\Coefficient\CoefficientHelper;
 use Areyounormis\Domain\Coefficient\CoefficientValue;
 use Areyounormis\Domain\Coefficient\CoefficientValueList;
 use Areyounormis\Domain\Vote\VoteList;
+use Areyounormis\Infrastructure\Coefficient\CoefficientConfigRepository;
+use Areyounormis\Service\Coefficient\Exceptions\CoefficientException;
+use Areyounormis\Service\Coefficient\Exceptions\InvalidCoefficientConfigException;
+use Areyounormis\Service\Coefficient\Exceptions\InvalidCoefficientTypeException;
+use Areyounormis\Service\Coefficient\Exceptions\InvalidCoefficientValueException;
+
 
 class CoefficientService
 {
-    protected CoefficientCalculator $coefCalc;
-    protected CoefficientConfigRepository $coefConfigRepo;
+    protected CoefficientCalculator $calculator;
+    protected CoefficientConfigRepository $configRepo;
+    protected CoefficientValidator $validator;
 
     public function __construct(
-        CoefficientCalculator $coefCalc,
+        CoefficientCalculator $calculator,
         CoefficientConfigRepository $coefConfigRepo,
+        CoefficientValidator $validator,
     ) {
-        $this->coefCalc = $coefCalc;
-        $this->coefConfigRepo = $coefConfigRepo;
+        $this->calculator = $calculator;
+        $this->configRepo = $coefConfigRepo;
+        $this->validator = $validator;
     }
 
     public function collectUserReportCoefficientValues(VoteList $votes): CoefficientValueList
@@ -50,7 +54,7 @@ class CoefficientService
      */
     public function calculateCoefficientValueByVotes(string $type, VoteList $votes): CoefficientValue
     {
-        $value = $this->coefCalc->calculateValue($type, $votes);
+        $value = $this->calculator->calculateValue($type, $votes);
         return $this->collectCoefficientValue($type, $value);
     }
 
@@ -61,7 +65,7 @@ class CoefficientService
      */
     public function collectCoefficientValue(string $type, float $value): CoefficientValue
     {
-        $coefficient = $this->coefConfigRepo->getByType($type);
+        $coefficient = $this->getByType($type);
         $level = $this->defineLevel($coefficient['levels'], $value);
 
         return new CoefficientValue(
@@ -69,6 +73,24 @@ class CoefficientService
             round($value, CoefficientHelper::PRECISION),
             new CoefficientLevel($level['color'], $level['description']),
         );
+    }
+
+    /**
+     * @throws InvalidCoefficientTypeException
+     * @throws InvalidCoefficientConfigException
+     */
+    protected function getByType(string $type): array
+    {
+        $this->validator->validateType($type);
+
+        try {
+            $coefficient = $this->configRepo->getByType($type);
+            $this->validator->validateConfigData($coefficient);
+
+            return $coefficient;
+        } catch (\InvalidArgumentException $exception) {
+            throw new InvalidCoefficientConfigException();
+        }
     }
 
     /**

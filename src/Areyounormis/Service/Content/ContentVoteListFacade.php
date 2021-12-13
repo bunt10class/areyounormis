@@ -7,18 +7,18 @@ namespace Areyounormis\Service\Content;
 use Areyounormis\Domain\Content\ContentVote;
 use Areyounormis\Domain\Content\ContentVoteList;
 
-class ContentVoteListCollector
+class ContentVoteListFacade
 {
-    public static function getTheFirstNumber(ContentVoteList $list, int $number): ContentVoteList
+    public static function collectTheFirstNumber(ContentVoteList $list, int $number): ContentVoteList
     {
         return new ContentVoteList(array_slice($list->getItems(), 0, $number));
     }
 
-    public static function getTheFirstNumberMaxDiff(ContentVoteList $list, int $number): ContentVoteList
+    public static function collectTheFirstNumberMaxDiff(ContentVoteList $list, int $number): ContentVoteList
     {
         $list = self::sortByModuleRelativeDiff($list, false);
 
-        return self::getTheFirstNumber($list, $number);
+        return self::collectTheFirstNumber($list, $number);
     }
 
     public static function sortByModuleRelativeDiff(ContentVoteList $list, bool $isAsc = true): ContentVoteList
@@ -49,8 +49,8 @@ class ContentVoteListCollector
         $list = $list->getItems();
 
         usort($list, function (ContentVote $contentVote1, ContentVote $contentVote2) use ($isAsc) {
-            $name1 = ContentCollector::getFullName($contentVote1->getContent());;
-            $name2 = ContentCollector::getFullName($contentVote2->getContent());;
+            $name1 = ContentFacade::collectFullName($contentVote1->getContent());;
+            $name2 = ContentFacade::collectFullName($contentVote2->getContent());;
 
             $result = strnatcasecmp($name1, $name2);
             if ($isAsc) {

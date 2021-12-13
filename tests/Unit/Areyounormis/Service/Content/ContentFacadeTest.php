@@ -4,23 +4,23 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Areyounormis\Service\Content;
 
-use Areyounormis\Service\Content\ContentCollector;
+use Areyounormis\Service\Content\ContentFacade;
 use PHPUnit\Framework\TestCase;
 use Tests\Unit\Areyounormis\Factories\ContentFactory;
 
-class ContentCollectorTest extends TestCase
+class ContentFacadeTest extends TestCase
 {
     /**
      * @group unit
      * @group areyounormis
      * @group content
-     * @group content_collector
+     * @group content_facade
      */
-    public function testGetFullNameWithEmptyData(): void
+    public function testCollectFullNameWithEmptyData(): void
     {
         $content = ContentFactory::getItem([]);
 
-        $result = ContentCollector::getFullName($content);
+        $result = ContentFacade::collectFullName($content);
 
         self::assertEquals('Без названия', $result);
     }
@@ -29,13 +29,13 @@ class ContentCollectorTest extends TestCase
      * @group unit
      * @group areyounormis
      * @group content
-     * @group content_collector
+     * @group content_facade
      */
-    public function testGetFullNameWithOnlyRuName(): void
+    public function testCollectFullNameWithOnlyRuName(): void
     {
         $content = ContentFactory::getItem(['ru_name' => $ruName = 'некоторое имя']);
 
-        $result = ContentCollector::getFullName($content);
+        $result = ContentFacade::collectFullName($content);
 
         self::assertEquals($ruName, $result);
     }
@@ -44,13 +44,13 @@ class ContentCollectorTest extends TestCase
      * @group unit
      * @group areyounormis
      * @group content
-     * @group content_collector
+     * @group content_facade
      */
-    public function testGetFullNameWithOnlyEnName(): void
+    public function testCollectFullNameWithOnlyEnName(): void
     {
         $content = ContentFactory::getItem(['en_name' => $enName = 'some name']);
 
-        $result = ContentCollector::getFullName($content);
+        $result = ContentFacade::collectFullName($content);
 
         self::assertEquals($enName, $result);
     }
@@ -59,16 +59,16 @@ class ContentCollectorTest extends TestCase
      * @group unit
      * @group areyounormis
      * @group content
-     * @group content_collector
+     * @group content_facade
      */
-    public function testGetFullName(): void
+    public function testCollectFullName(): void
     {
         $content = ContentFactory::getItem([
             'ru_name' => $ruName = 'некоторое имя',
             'en_name' => $enName = 'some name',
         ]);
 
-        $result = ContentCollector::getFullName($content);
+        $result = ContentFacade::collectFullName($content);
 
         self::assertEquals($ruName . ' (' . $enName . ')', $result);
     }

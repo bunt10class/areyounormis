@@ -2,14 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Tests\Unit\Areyounormis\Infrastructure\Coefficient\CoefficientValidator;
+namespace Tests\Unit\Areyounormis\Service\Coefficient\CoefficientValidator;
 
-use Areyounormis\Infrastructure\Coefficient\CoefficientValidator;
-use PHPUnit\Framework\TestCase;
 use Tests\Unit\Areyounormis\Factories\ConfigDataFactory;
 use Webmozart\Assert\InvalidArgumentException;
 
-class ValidateConfigDataTest extends TestCase
+class ValidateConfigDataTest extends CoefficientValidatorMain
 {
     /**
      * @group unit
@@ -21,7 +19,7 @@ class ValidateConfigDataTest extends TestCase
     {
         $configData = ConfigDataFactory::getDefaultCoefficientConfigData();
 
-        CoefficientValidator::validateConfigData($configData);
+        $this->classUnderTest->validateConfigData($configData);
 
         self::assertTrue(true);
     }
@@ -47,7 +45,7 @@ class ValidateConfigDataTest extends TestCase
             'description' => 'some_description',
         ];
 
-        CoefficientValidator::validateConfigData($configData);
+        $this->classUnderTest->validateConfigData($configData);
     }
 
     /**
@@ -67,7 +65,7 @@ class ValidateConfigDataTest extends TestCase
         ];
         $configData = ConfigDataFactory::getCoefficientConfigData([$level], 123, 'some_description');
 
-        CoefficientValidator::validateConfigData($configData);
+        $this->classUnderTest->validateConfigData($configData);
     }
 
     /**
@@ -91,7 +89,7 @@ class ValidateConfigDataTest extends TestCase
             'name' => 'some_name',
         ];
 
-        CoefficientValidator::validateConfigData($configData);
+        $this->classUnderTest->validateConfigData($configData);
     }
 
     /**
@@ -111,7 +109,7 @@ class ValidateConfigDataTest extends TestCase
         ];
         $configData = ConfigDataFactory::getCoefficientConfigData([$level], 'some_name', 123);
 
-        CoefficientValidator::validateConfigData($configData);
+        $this->classUnderTest->validateConfigData($configData);
     }
 
     /**
@@ -129,7 +127,7 @@ class ValidateConfigDataTest extends TestCase
             'description' => 'some_description',
         ];
 
-        CoefficientValidator::validateConfigData($configData);
+        $this->classUnderTest->validateConfigData($configData);
     }
 
     /**
@@ -148,7 +146,7 @@ class ValidateConfigDataTest extends TestCase
             'description' => 'some_description',
         ];
 
-        CoefficientValidator::validateConfigData($configData);
+        $this->classUnderTest->validateConfigData($configData);
     }
 
     /**
@@ -163,7 +161,7 @@ class ValidateConfigDataTest extends TestCase
 
         $configData = ConfigDataFactory::getCoefficientConfigData([], 'some_name', 'some_description');
 
-        CoefficientValidator::validateConfigData($configData);
+        $this->classUnderTest->validateConfigData($configData);
     }
 
     /**
@@ -187,7 +185,7 @@ class ValidateConfigDataTest extends TestCase
             'description' => 'some_description',
         ];
 
-        CoefficientValidator::validateConfigData($configData);
+        $this->classUnderTest->validateConfigData($configData);
     }
 
     /**
@@ -212,7 +210,7 @@ class ValidateConfigDataTest extends TestCase
             'description' => 'some_description',
         ];
 
-        CoefficientValidator::validateConfigData($configData);
+        $this->classUnderTest->validateConfigData($configData);
     }
 
     /**
@@ -237,7 +235,7 @@ class ValidateConfigDataTest extends TestCase
             'description' => 'some_description',
         ];
 
-        CoefficientValidator::validateConfigData($configData);
+        $this->classUnderTest->validateConfigData($configData);
     }
 
     /**
@@ -262,7 +260,7 @@ class ValidateConfigDataTest extends TestCase
             'description' => 'some_description',
         ];
 
-        CoefficientValidator::validateConfigData($configData);
+        $this->classUnderTest->validateConfigData($configData);
     }
 
     /**
@@ -286,7 +284,7 @@ class ValidateConfigDataTest extends TestCase
             'description' => 'some_description',
         ];
 
-        CoefficientValidator::validateConfigData($configData);
+        $this->classUnderTest->validateConfigData($configData);
     }
 
     /**
@@ -312,7 +310,7 @@ class ValidateConfigDataTest extends TestCase
             'description' => 'some_description',
         ];
 
-        CoefficientValidator::validateConfigData($configData);
+        $this->classUnderTest->validateConfigData($configData);
     }
 
     /**
@@ -336,7 +334,7 @@ class ValidateConfigDataTest extends TestCase
             'description' => 'some_description',
         ];
 
-        CoefficientValidator::validateConfigData($configData);
+        $this->classUnderTest->validateConfigData($configData);
     }
 
     /**
@@ -361,6 +359,6 @@ class ValidateConfigDataTest extends TestCase
             'description' => 'some_description',
         ];
 
-        CoefficientValidator::validateConfigData($configData);
+        $this->classUnderTest->validateConfigData($configData);
     }
 }
