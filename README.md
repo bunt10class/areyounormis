@@ -8,7 +8,7 @@
 ### Technology stack
 
 * Docker
-* native PHP8.0
+* native PHP8.0 (DDD)
 * Composer
 * Redis (хранение данных, реализация очередей задач)
 
